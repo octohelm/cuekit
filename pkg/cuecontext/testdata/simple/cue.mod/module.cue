@@ -1,0 +1,1 @@
+module: "ghcr.io/octothelm/simple@v0"
