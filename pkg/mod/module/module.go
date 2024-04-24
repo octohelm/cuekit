@@ -10,6 +10,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"sync"
 )
 
 const (
@@ -21,6 +22,8 @@ type Module struct {
 	module.SourceLoc
 	modfile.File
 	Overwrites *modfile.FileOverwrites
+
+	mu sync.Mutex
 }
 
 func (m *Module) SourceRoot() string {
@@ -91,7 +94,14 @@ func (m *Module) AddDep(mpath string, dep *cuemodfile.Dep) {
 }
 
 func (mm *Module) Save() error {
-	m := *mm
+	mm.mu.Lock()
+	defer mm.mu.Unlock()
+
+	m := &Module{
+		SourceLoc:  mm.SourceLoc,
+		File:       mm.File,
+		Overwrites: mm.Overwrites,
+	}
 
 	if !m.Overwrites.IsZero() {
 		for mpath, d := range m.Overwrites.Deps {
