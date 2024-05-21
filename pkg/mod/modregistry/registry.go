@@ -81,6 +81,13 @@ func (r *registry) Fetch(ctx context.Context, mv module.Version) (loc module.Sou
 			return r.local.ResolveLocal(ctx, depOverwrite.Path)
 		}
 
+		if depOverwrite.Path != "" {
+			v, err := module.NewVersion(depOverwrite.Path, depOverwrite.Version)
+			if err == nil {
+				mv = v
+			}
+		}
+
 		return r.local.Resolve(ctx, mv.Path(), depOverwrite.Version)
 	}
 
@@ -124,6 +131,14 @@ func (r *registry) Requirements(ctx context.Context, mv module.Version) ([]modul
 			}
 			return m.DepVersions(), nil
 		}
+
+		if depOverwrite.Path != "" {
+			v, err := module.NewVersion(depOverwrite.Path, depOverwrite.Version)
+			if err == nil {
+				mv = v
+			}
+		}
+
 		s, err := r.local.Fetch(ctx, mv)
 		if err != nil {
 			return nil, err
@@ -148,6 +163,10 @@ func (r *registry) ModuleVersions(ctx context.Context, mpath string) ([]string, 
 	if depOverwrite, ok := r.local.Root.GetDepOverwrite(mpath); ok {
 		if depOverwrite.IsLocalReplacement() {
 			return []string{"v0.0.0"}, nil
+		}
+
+		if depOverwrite.Path != "" {
+			mpath = depOverwrite.Path
 		}
 	}
 
