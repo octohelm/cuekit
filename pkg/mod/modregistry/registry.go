@@ -91,6 +91,10 @@ func (r *registry) Fetch(ctx context.Context, mv module.Version) (loc module.Sou
 		return r.local.Resolve(ctx, mv.Path(), depOverwrite.Version)
 	}
 
+	if m, ok := r.mem.Resolve(mv.Path()); ok {
+		return module.SourceLocOfOSDir(r.mem.CacheDir(r.local.CacheDir, m.Module, mv.Version())), nil
+	}
+
 	sl, err := r.std.Fetch(ctx, mv)
 	if err != nil {
 		if r.isNotExistsOfCueRegistry(err) {

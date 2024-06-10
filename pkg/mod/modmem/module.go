@@ -16,6 +16,9 @@ func NewModule(path string, version string, commitSource func(ctx context.Contex
 	m := &Module{}
 	m.Module = v.Path()
 	m.Version = v.Version()
+	m.Language = &modfile.Language{
+		Version: modfile.CueVersion,
+	}
 	m.Dir = "."
 
 	fsys := filesystem.NewMemFS()

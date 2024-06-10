@@ -1,4 +1,7 @@
 module: "ghcr.io/octothelm/gomod@v0"
+language: {
+	version: "v0.9.0"
+}
 deps: {
 	"github.com/octohelm/cuemod-versioned-example/v2@v2": {
 		v: "v2.0.1"

@@ -1,6 +1,7 @@
 package cuecontext
 
 import (
+	"github.com/octohelm/cuekit/pkg/mod/modfile"
 	"os"
 
 	"path/filepath"
@@ -53,6 +54,12 @@ func NewConfig(optionFns ...OptionFunc) (*Config, error) {
 
 	if c.Module == nil {
 		c.Module = &module.Module{}
+	}
+
+	if c.Module.Language == nil {
+		c.Module.Language = &modfile.Language{
+			Version: modfile.CueVersion,
+		}
 	}
 
 	c.Module.SourceLoc = module.SourceLocOfOSDir(c.Dir)

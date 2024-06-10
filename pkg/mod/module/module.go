@@ -103,6 +103,12 @@ func (mm *Module) Save() error {
 		Overwrites: mm.Overwrites,
 	}
 
+	if m.Language == nil {
+		m.Language = &modfile.Language{
+			Version: modfile.CueVersion,
+		}
+	}
+
 	if !m.Overwrites.IsZero() {
 		for mpath, d := range m.Overwrites.Deps {
 			if d.IsLocalReplacement() {

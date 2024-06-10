@@ -3,6 +3,7 @@ package cuecontext
 import (
 	"context"
 	"github.com/octohelm/cuekit/internal/cue"
+	"github.com/octohelm/cuekit/pkg/mod/modfile"
 	"github.com/octohelm/cuekit/pkg/mod/module"
 )
 
@@ -14,6 +15,9 @@ func Init(ctx context.Context, moduleRoot string, mpath string) error {
 
 	m := module.Module{}
 	m.SourceLoc = module.SourceLocOfOSDir(absDir)
+	m.Language = &modfile.Language{
+		Version: modfile.CueVersion,
+	}
 	m.Module = mpath
 
 	return m.Save()
@@ -27,7 +31,7 @@ func Tidy(ctx context.Context, moduleRoot string) error {
 		return err
 	}
 
-	mf, err := cue.Tidy(ctx, m.FS, ".", c.Registry, "")
+	mf, err := cue.Tidy(ctx, m.FS, ".", c.Registry)
 	if err != nil {
 		return err
 	}

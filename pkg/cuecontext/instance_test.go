@@ -70,6 +70,5 @@ package x
 
 		return nil
 	})
-
 	modmem.DefaultRegistry.Register(m)
 }
