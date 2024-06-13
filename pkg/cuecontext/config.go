@@ -15,27 +15,27 @@ import (
 
 type Config = load.Config
 
-type OptionFunc = func(c *ctx)
+type OptionFunc = func(c *ConfigWithModule)
 
 func WithRoot(dir string) OptionFunc {
-	return func(c *ctx) {
+	return func(c *ConfigWithModule) {
 		c.Dir = dir
 	}
 }
 
 func WithModule(m *module.Module) OptionFunc {
-	return func(c *ctx) {
+	return func(c *ConfigWithModule) {
 		c.Module = m
 	}
 }
 
-type ctx struct {
+type ConfigWithModule struct {
 	*Config
 	*module.Module
 }
 
-func NewConfig(optionFns ...OptionFunc) (*Config, error) {
-	c := &ctx{
+func NewConfig(optionFns ...OptionFunc) (*ConfigWithModule, error) {
+	c := &ConfigWithModule{
 		Config: &Config{},
 	}
 	for i := range optionFns {
@@ -71,7 +71,7 @@ func NewConfig(optionFns ...OptionFunc) (*Config, error) {
 
 	c.Registry = r
 
-	return c.Config, nil
+	return c, nil
 }
 
 func ResolveAbsDir(dir string) (string, error) {

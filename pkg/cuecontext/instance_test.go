@@ -16,7 +16,7 @@ func Test(t *testing.T) {
 		c, err := NewConfig(WithRoot("./testdata/simple"))
 		testingx.Expect(t, err, testingx.Be[error](nil))
 
-		_, err = EvalJSON(c)
+		_, err = EvalJSON(c.Config)
 		testingx.Expect(t, err, testingx.Be[error](nil))
 	})
 
@@ -24,15 +24,15 @@ func Test(t *testing.T) {
 		c, err := NewConfig(WithRoot("./testdata/gomod"))
 		testingx.Expect(t, err, testingx.Be[error](nil))
 
-		_, err = EvalJSON(c)
+		_, err = EvalJSON(c.Config)
 		testingx.Expect(t, err, testingx.Be[error](nil))
 	})
 
 	t.Run("should build with local replace", func(t *testing.T) {
-		inst, err := NewConfig(WithRoot("./testdata/localreplace"))
+		c, err := NewConfig(WithRoot("./testdata/localreplace"))
 		testingx.Expect(t, err, testingx.Be[error](nil))
 
-		_, err = EvalJSON(inst)
+		_, err = EvalJSON(c.Config)
 		testingx.Expect(t, err, testingx.Be[error](nil))
 	})
 
@@ -40,7 +40,7 @@ func Test(t *testing.T) {
 		c, err := NewConfig(WithRoot("./testdata/mem"))
 		testingx.Expect(t, err, testingx.Be[error](nil))
 
-		_, err = EvalJSON(c)
+		_, err = EvalJSON(c.Config)
 		testingx.Expect(t, err, testingx.Be[error](nil))
 	})
 
