@@ -1,11 +1,12 @@
 package module
 
 import (
-	"cuelang.org/go/mod/module"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"cuelang.org/go/mod/module"
 )
 
 func OSDirFS(dir string) fs.FS {
@@ -69,7 +70,6 @@ func WalkCueFile(root string, fromPath string) ([]string, error) {
 
 		return nil
 	})
-
 	if err != nil {
 		return nil, err
 	}

@@ -2,6 +2,7 @@ package modmem
 
 import (
 	"context"
+
 	"cuelang.org/go/mod/module"
 	"github.com/octohelm/cuekit/pkg/mod/modfile"
 	"github.com/octohelm/unifs/pkg/filesystem"

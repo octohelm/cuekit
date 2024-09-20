@@ -3,13 +3,14 @@ package modregistry
 import (
 	"context"
 	"fmt"
-	"github.com/octohelm/cuekit/pkg/mod/modfile"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"sync"
+
+	"github.com/octohelm/cuekit/pkg/mod/modfile"
 
 	"github.com/go-courier/logr"
 	"github.com/pkg/errors"

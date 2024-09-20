@@ -1,8 +1,9 @@
 package cuecontext
 
 import (
-	"github.com/octohelm/cuekit/pkg/mod/module"
 	"path/filepath"
+
+	"github.com/octohelm/cuekit/pkg/mod/module"
 
 	"cuelang.org/go/cue/build"
 	"cuelang.org/go/cue/load"

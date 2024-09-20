@@ -2,6 +2,7 @@ package gomod
 
 import (
 	"context"
+
 	"github.com/octohelm/cuekit/internal/gomod"
 )
 

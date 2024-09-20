@@ -2,11 +2,10 @@ test:
 	go test -v --failfast ./pkg/...
 
 fmt:
-	goimports -w -l ./pkg
+	gofumpt -w -l ./pkg/
 
 clean:
 	rm -rf ~/Library/Caches/cue/github.com/octohelm/cuemod-versioned-example*
-
 
 INTERNAL_FORK = go run ./internal/cmd/internalfork
 

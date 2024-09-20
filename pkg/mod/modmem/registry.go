@@ -2,11 +2,12 @@ package modmem
 
 import (
 	"fmt"
-	"github.com/octohelm/cuekit/pkg/mod/modfile"
 	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
+
+	"github.com/octohelm/cuekit/pkg/mod/modfile"
 
 	"github.com/octohelm/cuekit/pkg/mod/module"
 	"github.com/pkg/errors"

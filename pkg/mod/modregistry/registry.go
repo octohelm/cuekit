@@ -3,12 +3,12 @@ package modregistry
 import (
 	"context"
 	"fmt"
-	"github.com/octohelm/cuekit/pkg/mod/modfile"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"cuelang.org/go/mod/modconfig"
+	"github.com/octohelm/cuekit/pkg/mod/modfile"
 
 	"github.com/octohelm/cuekit/pkg/mod/modmem"
 	"github.com/octohelm/cuekit/pkg/mod/module"

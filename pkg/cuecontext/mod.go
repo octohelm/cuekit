@@ -2,6 +2,7 @@ package cuecontext
 
 import (
 	"context"
+
 	"github.com/octohelm/cuekit/internal/cue"
 	"github.com/octohelm/cuekit/pkg/mod/modfile"
 	"github.com/octohelm/cuekit/pkg/mod/module"

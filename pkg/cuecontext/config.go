@@ -1,10 +1,10 @@
 package cuecontext
 
 import (
-	"github.com/octohelm/cuekit/pkg/mod/modfile"
 	"os"
-
 	"path/filepath"
+
+	"github.com/octohelm/cuekit/pkg/mod/modfile"
 
 	"cuelang.org/go/cue/load"
 	"github.com/pkg/errors"
@@ -38,6 +38,7 @@ func NewConfig(optionFns ...OptionFunc) (*ConfigWithModule, error) {
 	c := &ConfigWithModule{
 		Config: &Config{},
 	}
+
 	for i := range optionFns {
 		optionFns[i](c)
 	}

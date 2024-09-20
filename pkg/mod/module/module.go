@@ -2,15 +2,17 @@ package module
 
 import (
 	"bytes"
-	cuemodfile "cuelang.org/go/mod/modfile"
-	"cuelang.org/go/mod/module"
 	"fmt"
-	"github.com/octohelm/cuekit/pkg/mod/modfile"
 	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"sync"
+
+	cuemodfile "cuelang.org/go/mod/modfile"
+	"cuelang.org/go/mod/module"
+
+	"github.com/octohelm/cuekit/pkg/mod/modfile"
 )
 
 const (
@@ -69,7 +71,7 @@ func (m *Module) loadModule(strict bool) error {
 		return err
 	}
 
-	var parse = cuemodfile.Parse
+	parse := cuemodfile.Parse
 	if !strict {
 		parse = cuemodfile.ParseNonStrict
 	}
