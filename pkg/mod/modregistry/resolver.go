@@ -10,31 +10,17 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/octohelm/cuekit/pkg/mod/modfile"
-
 	"github.com/go-courier/logr"
-	"github.com/pkg/errors"
-
 	"github.com/octohelm/cuekit/internal/gomod"
+	"github.com/octohelm/cuekit/pkg/mod/modfile"
 	"github.com/octohelm/cuekit/pkg/mod/module"
+	"github.com/pkg/errors"
 )
 
 type resolver struct {
-	CacheDir string
 	Root     *module.Module
-
+	CacheDir string
 	resolved sync.Map
-}
-
-func (r *resolver) ResolveLocal(ctx context.Context, path string) (module.SourceLoc, error) {
-	dir := filepath.Join(r.Root.SourceRoot(), path)
-
-	info, err := os.Stat(dir)
-	if err != nil || !info.IsDir() {
-		return module.SourceLoc{}, errors.Errorf("replace dir must exists dir %s", dir)
-	}
-
-	return module.SourceLocOfOSDir(dir), nil
 }
 
 func (r *resolver) Fetch(ctx context.Context, m module.Version) (module.SourceLoc, error) {
@@ -85,24 +71,52 @@ func (r *resolver) ModuleVersions(ctx context.Context, mpath string) ([]string, 
 	return versions, nil
 }
 
+func (r *resolver) ResolveLocal(ctx context.Context, path string, mv module.Version) (module.SourceLoc, error) {
+	do, _ := r.resolved.LoadOrStore(fmt.Sprintf("%s@%s", mv.Path(), mv.Version()), sync.OnceValues(func() (module.SourceLoc, error) {
+		src := filepath.Join(r.Root.SourceRoot(), path)
+
+		info, err := os.Stat(src)
+		if err != nil || !info.IsDir() {
+			return module.SourceLoc{}, errors.Errorf("replace source dir %s must exists", src)
+		}
+
+		if links, ok := r.Root.Overwrites.ModLinks(mv.Path()); ok {
+			for dst, link := range links {
+				if err := r.syncAsLink(ctx, dst, src, link); err != nil {
+					return module.SourceLoc{}, fmt.Errorf("sync link as %s failed: %w", dst, err)
+				}
+			}
+		}
+
+		return module.SourceLocOfOSDir(src), nil
+	}))
+
+	return do.(func() (module.SourceLoc, error))()
+}
+
 func (r *resolver) Resolve(ctx context.Context, mpath string, version string) (module.SourceLoc, error) {
-	do, _ := r.resolved.LoadOrStore(fmt.Sprintf("%s@%s", mpath, version), sync.OnceValue(func() any {
+	do, _ := r.resolved.LoadOrStore(fmt.Sprintf("%s@%s", mpath, version), sync.OnceValues(func() (module.SourceLoc, error) {
 		info, err := r.gomodDownload(ctx, mpath, version)
 		if err != nil {
-			return err
+			return module.SourceLoc{}, err
 		}
+
+		if links, ok := r.Root.Overwrites.ModLinks(mpath); ok {
+			for dst, link := range links {
+				if err := r.syncAsLink(ctx, dst, info.Dir, link); err != nil {
+					return module.SourceLoc{}, fmt.Errorf("sync link as %s failed: %w", dst, err)
+				}
+			}
+		}
+
 		loc, err := r.convertToCueMod(ctx, mpath, info)
 		if err != nil {
-			return err
+			return module.SourceLoc{}, err
 		}
-		return loc
+		return loc, nil
 	}))
-	switch x := do.(func() any)().(type) {
-	case error:
-		return module.SourceLoc{}, x
-	default:
-		return x.(module.SourceLoc), nil
-	}
+
+	return do.(func() (module.SourceLoc, error))()
 }
 
 func (r *resolver) gomodDownload(ctx context.Context, mpath string, version string) (*gomod.Module, error) {
@@ -125,11 +139,36 @@ func (r *resolver) gomodDownload(ctx context.Context, mpath string, version stri
 	return info, nil
 }
 
-func (r *resolver) convertToCueMod(ctx context.Context, mpath string, info *gomod.Module) (module.SourceLoc, error) {
-	dist := filepath.Join(r.CacheDir, fmt.Sprintf("%s@%s", module.BasePath(mpath), info.Version))
+func (r *resolver) syncAsLink(ctx context.Context, dst, src string, link *modfile.Link) error {
+	if dst == "" {
+		return fmt.Errorf("invalid link dest: %s", dst)
+	}
 
-	if err := os.RemoveAll(dist); err != nil {
-		return module.SourceLoc{}, errors.Wrapf(err, "clean dest failed: %s", dist)
+	outDir := filepath.Join(r.Root.SourceRoot(), dst)
+
+	if err := os.RemoveAll(outDir); err != nil {
+		return errors.Wrapf(err, "clean failed: %s", outDir)
+	}
+
+	return fs.WalkDir(module.OSDirFS(src), link.Path, func(path string, d fs.DirEntry, err error) error {
+		if d.IsDir() {
+			return nil
+		}
+
+		relPath, err := filepath.Rel(link.Path, path)
+		if err != nil {
+			return err
+		}
+
+		return copyFile(filepath.Join(src, path), filepath.Join(outDir, relPath))
+	})
+}
+
+func (r *resolver) convertToCueMod(ctx context.Context, mpath string, info *gomod.Module) (module.SourceLoc, error) {
+	outDir := filepath.Join(r.CacheDir, fmt.Sprintf("%s@%s", module.BasePath(mpath), info.Version))
+
+	if err := os.RemoveAll(outDir); err != nil {
+		return module.SourceLoc{}, errors.Wrapf(err, "clean failed: %s", outDir)
 	}
 
 	if err := fs.WalkDir(module.OSDirFS(info.Dir), ".", func(path string, d fs.DirEntry, err error) error {
@@ -145,7 +184,7 @@ func (r *resolver) convertToCueMod(ctx context.Context, mpath string, info *gomo
 			return nil
 		}
 
-		return copyFile(filepath.Join(info.Dir, path), filepath.Join(dist, path))
+		return copyFile(filepath.Join(info.Dir, path), filepath.Join(outDir, path))
 	}); err != nil {
 		return module.SourceLoc{}, err
 	}
@@ -161,8 +200,8 @@ func (r *resolver) convertToCueMod(ctx context.Context, mpath string, info *gomo
 	mod.Overwrites.Path = info.Path
 	mod.Overwrites.Version = info.Version
 
-	// switch to dist
-	mod.SourceLoc = module.SourceLocOfOSDir(dist)
+	// switch to outDir
+	mod.SourceLoc = module.SourceLocOfOSDir(outDir)
 	if err := mod.Save(); err != nil {
 		return module.SourceLoc{}, err
 	}

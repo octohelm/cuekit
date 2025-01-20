@@ -18,7 +18,7 @@ func NewModule(path string, version string, commitSource func(ctx context.Contex
 	m.Module = v.Path()
 	m.Version = v.Version()
 	m.Language = &modfile.Language{
-		Version: modfile.CueVersion,
+		Version: modfile.GetCueVersion(),
 	}
 	m.Dir = "."
 

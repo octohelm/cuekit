@@ -13,7 +13,8 @@ import (
 )
 
 type FileOverwrites struct {
-	Deps map[string]*DepOverwrite `json:"deps,omitempty"`
+	Deps  map[string]*DepOverwrite `json:"deps,omitempty"`
+	Links map[string]*Link         `json:"links,omitempty"`
 
 	// Path resolved
 	Path string `json:"path,omitempty"`
@@ -30,6 +31,7 @@ func (f *FileOverwrites) AddDep(mpath string, dep *DepOverwrite) {
 	if f.Deps == nil {
 		f.Deps = map[string]*DepOverwrite{}
 	}
+
 	f.Deps[mpath] = dep
 }
 
@@ -86,6 +88,22 @@ func (f *FileOverwrites) IsZero() bool {
 	return f == nil || (f.Version == "") && len(f.Deps) == 0
 }
 
+func (f *FileOverwrites) ModLinks(mpath string) (map[string]*Link, bool) {
+	if f.Links == nil {
+		return nil, false
+	}
+
+	links := map[string]*Link{}
+
+	for local, link := range f.Links {
+		if link.Source == mpath {
+			links[local] = link
+		}
+	}
+
+	return links, len(links) > 0
+}
+
 type DepOverwrite struct {
 	Path    string `json:"path,omitempty"`
 	Source  string `json:"source,omitempty"`
@@ -94,4 +112,9 @@ type DepOverwrite struct {
 
 func (o *DepOverwrite) IsLocalReplacement() bool {
 	return o.Path != "" && strings.HasPrefix(o.Path, ".")
+}
+
+type Link struct {
+	Source string `json:"source"`
+	Path   string `json:"path"`
 }

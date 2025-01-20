@@ -59,7 +59,7 @@ func NewConfig(optionFns ...OptionFunc) (*ConfigWithModule, error) {
 
 	if c.Module.Language == nil {
 		c.Module.Language = &modfile.Language{
-			Version: modfile.CueVersion,
+			Version: modfile.GetCueVersion(),
 		}
 	}
 

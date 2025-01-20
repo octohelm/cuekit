@@ -12,3 +12,9 @@ deps: {
 		v:    "v0.5.4"
 	}
 }
+links: {
+	"vendor/cuepkg": {
+		source: "github.com/octohelm/cuemod-versioned-example/v2@v2"
+		path:   "cuepkg"
+	}
+}

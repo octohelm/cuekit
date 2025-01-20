@@ -9,7 +9,6 @@ import (
 
 	"cuelang.org/go/mod/modconfig"
 	"github.com/octohelm/cuekit/pkg/mod/modfile"
-
 	"github.com/octohelm/cuekit/pkg/mod/modmem"
 	"github.com/octohelm/cuekit/pkg/mod/module"
 )
@@ -78,7 +77,7 @@ func (r *registry) Fetch(ctx context.Context, mv module.Version) (loc module.Sou
 
 	if depOverwrite, ok := r.local.Root.GetDepOverwrite(mv.Path()); ok {
 		if depOverwrite.IsLocalReplacement() {
-			return r.local.ResolveLocal(ctx, depOverwrite.Path)
+			return r.local.ResolveLocal(ctx, depOverwrite.Path, mv)
 		}
 
 		if depOverwrite.Path != "" {
@@ -125,7 +124,7 @@ func (r *registry) Requirements(ctx context.Context, mv module.Version) ([]modul
 
 	if depOverwrite, ok := r.local.Root.GetDepOverwrite(mv.Path()); ok {
 		if depOverwrite.IsLocalReplacement() {
-			s, err := r.local.ResolveLocal(ctx, depOverwrite.Path)
+			s, err := r.local.ResolveLocal(ctx, depOverwrite.Path, mv)
 			if err != nil {
 				return nil, err
 			}

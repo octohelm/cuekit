@@ -17,7 +17,7 @@ func Init(ctx context.Context, moduleRoot string, mpath string) error {
 	m := module.Module{}
 	m.SourceLoc = module.SourceLocOfOSDir(absDir)
 	m.Language = &modfile.Language{
-		Version: modfile.CueVersion,
+		Version: modfile.GetCueVersion(),
 	}
 	m.Module = mpath
 
@@ -38,7 +38,6 @@ func Tidy(ctx context.Context, moduleRoot string) error {
 	}
 
 	m.File = *mf
-
 	m.Tidy()
 
 	return m.Save()

@@ -20,6 +20,8 @@ const (
 	fileModuleOverwrites = "cue.mod/module_overwrites.cue"
 )
 
+type OSRootFS = module.OSRootFS
+
 type Module struct {
 	module.SourceLoc
 	modfile.File
@@ -29,7 +31,7 @@ type Module struct {
 }
 
 func (m *Module) SourceRoot() string {
-	if osRoot, ok := m.FS.(module.OSRootFS); ok {
+	if osRoot, ok := m.FS.(OSRootFS); ok {
 		return filepath.Join(osRoot.OSRoot(), m.Dir)
 	}
 	return fmt.Sprintf("mem:%s", m.Dir)
@@ -107,7 +109,7 @@ func (mm *Module) Save() error {
 
 	if m.Language == nil {
 		m.Language = &modfile.Language{
-			Version: modfile.CueVersion,
+			Version: modfile.GetCueVersion(),
 		}
 	}
 
