@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package cfg
+package pathcache
 
 import (
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/par"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/par"
 	"os/exec"
 )
 

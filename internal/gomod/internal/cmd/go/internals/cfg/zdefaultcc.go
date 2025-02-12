@@ -7,10 +7,18 @@ const DefaultPkgConfig = `pkg-config`
 func DefaultCC(goos, goarch string) string {
 	switch goos + `/` + goarch {
 	}
-	return "cc"
+	switch goos {
+	case "darwin", "ios", "freebsd", "openbsd":
+		return "clang"
+	}
+	return "gcc"
 }
 func DefaultCXX(goos, goarch string) string {
 	switch goos + `/` + goarch {
 	}
-	return "c++"
+	switch goos {
+	case "darwin", "ios", "freebsd", "openbsd":
+		return "clang++"
+	}
+	return "g++"
 }

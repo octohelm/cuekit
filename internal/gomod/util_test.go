@@ -2,10 +2,10 @@ package gomod
 
 import (
 	"context"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	"os"
 	"testing"
 
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	. "github.com/onsi/gomega"
 )
 

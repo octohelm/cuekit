@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/fsys"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/syslist"
 	"go/ast"
 	"go/build"
 	"go/build/constraint"
@@ -37,7 +38,7 @@ type Context struct {
 	// the current directory of the running process. In module mode, this is used
 	// to locate the main module.
 	//
-	// If Dir is non-empty, directories passed to Type and ImportDir must
+	// If Dir is non-empty, directories passed to Import and ImportDir must
 	// be absolute.
 	Dir string
 
@@ -67,26 +68,26 @@ type Context struct {
 	// "linux_386_race" instead of the usual "linux_386".
 	InstallSuffix string
 
-	// By default, Type uses the operating system's file system calls
+	// By default, Import uses the operating system's file system calls
 	// to read directories and files. To read from other sources,
 	// callers can set the following functions. They all have default
 	// behaviors that use the local file system, so clients need only set
 	// the functions whose behaviors they wish to change.
 
 	// JoinPath joins the sequence of path fragments into a single path.
-	// If JoinPath is nil, Type uses filepath.Join.
+	// If JoinPath is nil, Import uses filepath.Join.
 	JoinPath func(elem ...string) string
 
 	// SplitPathList splits the path list into a slice of individual paths.
-	// If SplitPathList is nil, Type uses filepath.SplitList.
+	// If SplitPathList is nil, Import uses filepath.SplitList.
 	SplitPathList func(list string) []string
 
 	// IsAbsPath reports whether path is an absolute path.
-	// If IsAbsPath is nil, Type uses filepath.IsAbs.
+	// If IsAbsPath is nil, Import uses filepath.IsAbs.
 	IsAbsPath func(path string) bool
 
 	// IsDir reports whether the path names a directory.
-	// If IsDir is nil, Type calls os.Stat and uses the result's IsDir method.
+	// If IsDir is nil, Import calls os.Stat and uses the result's IsDir method.
 	IsDir func(path string) bool
 
 	// HasSubdir reports whether dir is lexically a subdirectory of
@@ -94,17 +95,17 @@ type Context struct {
 	// whether dir exists.
 	// If so, HasSubdir sets rel to a slash-separated path that
 	// can be joined to root to produce a path equivalent to dir.
-	// If HasSubdir is nil, Type uses an implementation built on
+	// If HasSubdir is nil, Import uses an implementation built on
 	// filepath.EvalSymlinks.
 	HasSubdir func(root, dir string) (rel string, ok bool)
 
 	// ReadDir returns a slice of fs.FileInfo, sorted by Name,
 	// describing the content of the named directory.
-	// If ReadDir is nil, Type uses ioutil.ReadDir.
+	// If ReadDir is nil, Import uses ioutil.ReadDir.
 	ReadDir func(dir string) ([]fs.FileInfo, error)
 
 	// OpenFile opens a file (not a directory) for reading.
-	// If OpenFile is nil, Type uses os.Open.
+	// If OpenFile is nil, Import uses os.Open.
 	OpenFile func(path string) (io.ReadCloser, error)
 }
 
@@ -208,7 +209,7 @@ func (ctxt *Context) gopath() []string {
 
 var defaultToolTags, defaultReleaseTags []string
 
-// NoGoError is the error used by Type to describe a directory
+// NoGoError is the error used by Import to describe a directory
 // containing no buildable Go source files. (It may still contain
 // test files, files hidden by build tags, and so on.)
 type NoGoError struct {
@@ -878,7 +879,7 @@ func (ctxt *Context) matchTag(name string, allTags map[string]bool) bool {
 	if ctxt.GOOS == "ios" && name == "darwin" {
 		return true
 	}
-	if name == "unix" && unixOS[ctxt.GOOS] {
+	if name == "unix" && syslist.UnixOS[ctxt.GOOS] {
 		return true
 	}
 	if name == "boringcrypto" {
@@ -941,14 +942,14 @@ func (ctxt *Context) goodOSArchFile(name string, allTags map[string]bool) bool {
 		l = l[:n-1]
 	}
 	n := len(l)
-	if n >= 2 && knownOS[l[n-2]] && knownArch[l[n-1]] {
+	if n >= 2 && syslist.KnownOS[l[n-2]] && syslist.KnownArch[l[n-1]] {
 		if allTags != nil {
 			// In case we short-circuit on l[n-1].
 			allTags[l[n-2]] = true
 		}
 		return ctxt.matchTag(l[n-1], allTags) && ctxt.matchTag(l[n-2], allTags)
 	}
-	if n >= 1 && (knownOS[l[n-1]] || knownArch[l[n-1]]) {
+	if n >= 1 && (syslist.KnownOS[l[n-1]] || syslist.KnownArch[l[n-1]]) {
 		return ctxt.matchTag(l[n-1], allTags)
 	}
 	return true

@@ -2,7 +2,6 @@ package gomod
 
 import (
 	"context"
-	"path"
 	"strings"
 	_ "unsafe"
 
@@ -25,7 +24,7 @@ func lookupCodeRepo(ctx context.Context, rr *vcs.RepoRoot) (codehost.Repo, error
 
 func finalLookupCodeRepo(ctx context.Context, rr *vcs.RepoRoot, localOk bool) (codehost.Repo, error) {
 	if strings.ToLower(rr.VCS.Name) == "git" && localOk {
-		return codehost.LocalGitRepo(ctx, path.Join(rr.Root, ".git"))
+		return codehost.NewRepo(ctx, "git", rr.Root, true)
 	}
 	return lookupCodeRepo(ctx, rr)
 }
