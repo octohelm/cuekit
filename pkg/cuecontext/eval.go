@@ -1,10 +1,11 @@
 package cuecontext
 
 import (
-	"cuelang.org/go/cue"
-	"cuelang.org/go/cue/cuecontext"
 	"iter"
 	"slices"
+
+	"cuelang.org/go/cue"
+	"cuelang.org/go/cue/cuecontext"
 )
 
 func Build(c *Config, input iter.Seq[string], opts ...cuecontext.Option) (cue.Value, error) {
