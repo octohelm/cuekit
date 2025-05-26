@@ -2,10 +2,10 @@ package gomod
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	_ "unsafe"
 
-	"github.com/pkg/errors"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/mod/module"
 
@@ -39,12 +39,12 @@ func RevInfoFromDir(ctx context.Context, dir string) (*RevInfo, error) {
 
 	repo, err := c.RemoteRepo(c, rootDir)
 	if err != nil {
-		return nil, errors.Wrap(err, "resolve remote repo failed")
+		return nil, fmt.Errorf("resolve remote repo failed: %w", err)
 	}
 
 	head, err := c.Status(c, rootDir)
 	if err != nil {
-		return nil, errors.Wrapf(err, "stat faield")
+		return nil, fmt.Errorf("stat faield: %w", err)
 	}
 
 	rr := &vcs.RepoRoot{}
@@ -80,7 +80,7 @@ func RevInfoFromDir(ctx context.Context, dir string) (*RevInfo, error) {
 
 	info, err := r.Stat(ctx, head.Revision)
 	if err != nil {
-		return nil, errors.Wrapf(err, "stat faield")
+		return nil, fmt.Errorf("stat faield: %w", err)
 	}
 
 	info.Version = version.Convert(info.Version, info.Time, info.Short, head.Uncommitted)

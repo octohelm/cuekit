@@ -1,0 +1,8 @@
+-- g.d2 --
+direction: right
+
+"/actions/x/_archive/linux~1amd64/_copy\nCopy"
+"/actions/x/_build/linux~1amd64\nCopy" -> "/actions/x/_archive/linux~1amd64/_copy\nCopy"
+"/actions/x/_build/linux~1amd64\nCopy"
+"/def\nDef" -> "/actions/x/_build/linux~1amd64\nCopy"
+"/def\nDef"

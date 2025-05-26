@@ -2,6 +2,7 @@ package modregistry
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io/fs"
 	"os"
@@ -14,7 +15,6 @@ import (
 	"github.com/octohelm/cuekit/internal/gomod"
 	"github.com/octohelm/cuekit/pkg/mod/modfile"
 	"github.com/octohelm/cuekit/pkg/mod/module"
-	"github.com/pkg/errors"
 )
 
 type resolver struct {
@@ -77,7 +77,7 @@ func (r *resolver) ResolveLocal(ctx context.Context, path string, mv module.Vers
 
 		info, err := os.Stat(src)
 		if err != nil || !info.IsDir() {
-			return module.SourceLoc{}, errors.Errorf("replace source dir %s must exists", src)
+			return module.SourceLoc{}, fmt.Errorf("replace source dir %s must exists: %w", src, err)
 		}
 
 		if links, ok := r.Root.Overwrites.ModLinks(mv.Path()); ok {
@@ -126,7 +126,7 @@ func (r *resolver) gomodDownload(ctx context.Context, mpath string, version stri
 		return nil, fmt.Errorf("can't found %s@%s", pkg, version)
 	}
 	if info.Error != "" {
-		return nil, errors.Wrap(errors.New(info.Error), "gomod download failed")
+		return nil, fmt.Errorf("gomod download failed: %w", errors.New(info.Error))
 	}
 
 	if info.Dir == "" {
@@ -147,7 +147,7 @@ func (r *resolver) syncAsLink(ctx context.Context, dst, src string, link *modfil
 	outDir := filepath.Join(r.Root.SourceRoot(), dst)
 
 	if err := os.RemoveAll(outDir); err != nil {
-		return errors.Wrapf(err, "clean failed: %s", outDir)
+		return fmt.Errorf("clean %s failed: %w", outDir, err)
 	}
 
 	return fs.WalkDir(module.OSDirFS(src), link.Path, func(path string, d fs.DirEntry, err error) error {
@@ -168,7 +168,7 @@ func (r *resolver) convertToCueMod(ctx context.Context, mpath string, info *gomo
 	outDir := filepath.Join(r.CacheDir, fmt.Sprintf("%s@%s", module.BasePath(mpath), info.Version))
 
 	if err := os.RemoveAll(outDir); err != nil {
-		return module.SourceLoc{}, errors.Wrapf(err, "clean failed: %s", outDir)
+		return module.SourceLoc{}, fmt.Errorf("clean %s failed: %w", outDir, err)
 	}
 
 	if err := fs.WalkDir(module.OSDirFS(info.Dir), ".", func(path string, d fs.DirEntry, err error) error {

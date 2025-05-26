@@ -3,7 +3,7 @@ package cuecontext
 import (
 	"context"
 
-	"github.com/octohelm/cuekit/internal/cue"
+	"cuelang.org/go/mod/modload"
 	"github.com/octohelm/cuekit/pkg/mod/modfile"
 	"github.com/octohelm/cuekit/pkg/mod/module"
 )
@@ -32,7 +32,7 @@ func Tidy(ctx context.Context, moduleRoot string) error {
 		return err
 	}
 
-	mf, err := cue.Tidy(ctx, m.FS, ".", c.Registry)
+	mf, err := modload.Tidy(ctx, m.FS, ".", c.Registry)
 	if err != nil {
 		return err
 	}

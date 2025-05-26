@@ -1,0 +1,27 @@
+-- g.d2 --
+direction: right
+
+"/action/_archive/linux~1amd64/_built\n#WorkDir"
+"/action/_build/linux~1amd64\n#Build" -> "/action/_archive/linux~1amd64/_built\n#WorkDir"
+"/action/_archive/linux~1amd64/_copy\n#Copy"{ shape: step }
+"/action/_archive/linux~1amd64/_built\n#WorkDir" -> "/action/_archive/linux~1amd64/_copy\n#Copy"
+"/action/_build/linux~1amd64\n#Build" -> "/action/_archive/linux~1amd64/_copy\n#Copy"
+"/action/_archive/linux~1amd64/output\n#WorkDir"
+"/action/_archive/linux~1amd64/_copy\n#Copy" -> "/action/_archive/linux~1amd64/output\n#WorkDir"
+"/action/_archive/linux~1arm64/_built\n#WorkDir"
+"/action/_build/linux~1arm64\n#Build" -> "/action/_archive/linux~1arm64/_built\n#WorkDir"
+"/action/_archive/linux~1arm64/_copy\n#Copy"{ shape: step }
+"/action/_archive/linux~1arm64/_built\n#WorkDir" -> "/action/_archive/linux~1arm64/_copy\n#Copy"
+"/action/_build/linux~1arm64\n#Build" -> "/action/_archive/linux~1arm64/_copy\n#Copy"
+"/action/_archive/linux~1arm64/output\n#WorkDir"
+"/action/_archive/linux~1arm64/_copy\n#Copy" -> "/action/_archive/linux~1arm64/output\n#WorkDir"
+"/action/_build/linux~1amd64\n#Build"{ shape: step }
+"/action/_local\n#Local" -> "/action/_build/linux~1amd64\n#Build"
+"/action/_build/linux~1arm64\n#Build"{ shape: step }
+"/action/_local\n#Local" -> "/action/_build/linux~1arm64\n#Build"
+"/action/_local\n#Local"{ shape: step }
+"/action/result\n#WorkDir"
+"/action/_archive/linux~1arm64/_copy\n#Copy" -> "/action/result\n#WorkDir"
+"/action/_archive/linux~1arm64/output\n#WorkDir" -> "/action/result\n#WorkDir"
+-- result.json --
+{"$$type":{"name":"#WorkDir"},"$$wd":{"id":"local:"}}

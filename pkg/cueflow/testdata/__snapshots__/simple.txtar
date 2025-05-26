@@ -1,0 +1,10 @@
+-- g.d2 --
+direction: right
+
+"/action/_env\n#Env"{ shape: step }
+"/action/_exec\n#Exec"{ shape: step }
+"/action/_env\n#Env" -> "/action/_exec\n#Exec"
+"/action/_local\n#Local" -> "/action/_exec\n#Exec"
+"/action/_local\n#Local"{ shape: step }
+-- result.json --
+"local: [env] map[KEY:key]"

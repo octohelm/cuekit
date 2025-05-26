@@ -1,14 +1,12 @@
 package cuecontext
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
-	"github.com/octohelm/cuekit/pkg/mod/modfile"
-
 	"cuelang.org/go/cue/load"
-	"github.com/pkg/errors"
-
+	"github.com/octohelm/cuekit/pkg/mod/modfile"
 	"github.com/octohelm/cuekit/pkg/mod/modregistry"
 	"github.com/octohelm/cuekit/pkg/mod/module"
 )
@@ -50,7 +48,7 @@ func NewConfig(optionFns ...OptionFunc) (*ConfigWithModule, error) {
 	c.Dir = dir
 
 	if _, err := os.Stat(c.Dir); err != nil {
-		return nil, errors.Wrapf(err, "%s", c.Dir)
+		return nil, fmt.Errorf("%s: %w", c.Dir, err)
 	}
 
 	if c.Module == nil {

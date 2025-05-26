@@ -1,0 +1,6 @@
+-- g.d2 --
+direction: right
+
+"/actions/_pull\nPull"
+"/actions/result\nFs"
+"/actions/_pull\nPull" -> "/actions/result\nFs"

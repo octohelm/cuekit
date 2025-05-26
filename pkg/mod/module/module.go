@@ -11,7 +11,6 @@ import (
 
 	cuemodfile "cuelang.org/go/mod/modfile"
 	"cuelang.org/go/mod/module"
-
 	"github.com/octohelm/cuekit/pkg/mod/modfile"
 )
 
@@ -144,6 +143,7 @@ func (mm *Module) Save() error {
 	if err := putFileContents(filepath.Join(m.SourceRoot(), fileModule), bytes.NewBuffer(data)); err != nil {
 		return err
 	}
+
 	return nil
 }
 

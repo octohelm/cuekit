@@ -1,13 +1,12 @@
 package cuecontext
 
 import (
+	"errors"
 	"path/filepath"
-
-	"github.com/octohelm/cuekit/pkg/mod/module"
 
 	"cuelang.org/go/cue/build"
 	"cuelang.org/go/cue/load"
-	"github.com/pkg/errors"
+	"github.com/octohelm/cuekit/pkg/mod/module"
 )
 
 type Instance = build.Instance

@@ -1,0 +1,16 @@
+-- g.d2 --
+direction: right
+
+"/actions/x/_build\nExec"
+"/actions/x/_info/_read\nDef" -> "/actions/x/_build\nExec"
+"/actions/x/_info/output\nDef" -> "/actions/x/_build\nExec"
+"/def\nDef" -> "/actions/x/_build\nExec"
+"/actions/x/_info/_read\nDef"
+"/actions/x/_info/target\nFile" -> "/actions/x/_info/_read\nDef"
+"/local\nDef" -> "/actions/x/_info/_read\nDef"
+"/actions/x/_info/output\nDef"
+"/actions/x/_info/_read\nDef" -> "/actions/x/_info/output\nDef"
+"/actions/x/_info/target\nFile"
+"/local\nDef" -> "/actions/x/_info/target\nFile"
+"/def\nDef"
+"/local\nDef"

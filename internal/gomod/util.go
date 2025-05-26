@@ -2,10 +2,11 @@ package gomod
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 
-	"github.com/pkg/errors"
 	"golang.org/x/mod/module"
 
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
@@ -78,7 +79,7 @@ func Get(ctx context.Context, path string, version string, verbose bool) *Module
 
 	found, err := modload.ListModulesOnly(ctx, []string{requestPath}, modload.ListVersions)
 	if err != nil {
-		panic(errors.Wrapf(err, "list %s failed", requestPath))
+		panic(fmt.Errorf("list %s failed: %w", requestPath, err))
 	}
 	if len(found) > 0 {
 		info := found[0]

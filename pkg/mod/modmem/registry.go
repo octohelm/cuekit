@@ -8,9 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/octohelm/cuekit/pkg/mod/modfile"
-
 	"github.com/octohelm/cuekit/pkg/mod/module"
-	"github.com/pkg/errors"
 )
 
 var DefaultRegistry = Registry{}
@@ -50,7 +48,7 @@ func (r Registry) dumpModuleToCache(cacheDir string, m *Module) error {
 	dist := r.CacheDir(cacheDir, m.Module, m.Version)
 
 	if err := os.RemoveAll(dist); err != nil {
-		return errors.Wrapf(err, "clean dest failed: %s", dist)
+		return fmt.Errorf("clean dest %s failed: %w", dist, err)
 	}
 
 	return fs.WalkDir(m.FS, ".", func(path string, d fs.DirEntry, err error) error {
