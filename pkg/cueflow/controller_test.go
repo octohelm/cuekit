@@ -42,8 +42,8 @@ func loadWithDecl(path string) ([]byte, error) {
 }
 
 func FuzzController(f *testing.F) {
-	f.Add("multi_arch_build")
 	f.Add("simple")
+	f.Add("multi_arch_build")
 
 	f.Fuzz(func(t *testing.T, task string) {
 		b := bdd.FromT(t)
@@ -78,7 +78,7 @@ func FuzzController(f *testing.F) {
 				err := ctrl.Run(ctx)
 				b.Then("success", bdd.NoError(err))
 
-				ret := ctrl.LookupPath(cue.ParsePath("action.result"))
+				ret := ctrl.Value().LookupPath(cue.ParsePath("action.result"))
 
 				b.Then("got results",
 					bdd.MatchSnapshot(func(s *snapshot.Snapshot) {

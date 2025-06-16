@@ -54,7 +54,7 @@ func (r *Resolver) addNode(n Node) {
 }
 
 func (r *Resolver) resolveDepsOf(target Node) error {
-	for path, err := range r.referencePathsOf(target.Value(), map[string]bool{}) {
+	for path, err := range r.referencePathsOf(r.root.LookupPath(target.Path()), map[string]bool{}) {
 		if err != nil {
 			return err
 		}
@@ -91,7 +91,7 @@ func (r *Resolver) scanNodes(v cue.Value, scanned map[string]bool) error {
 			scanned[p] = true
 
 			if name, ok := r.isNode(fv); ok {
-				r.addNode(r.createNode(&node{name: name, value: fv}))
+				r.addNode(r.createNode(&node{name: name, path: fv.Path()}))
 				// don't scan deep
 				continue
 			}

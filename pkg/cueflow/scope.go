@@ -9,22 +9,30 @@ import (
 
 type Scope interface {
 	Value() cue.Value
+
 	LookupPath(path cue.Path) cue.Value
+	DecodePath(path cue.Path, target any) error
+	DecodePathWith(path cue.Path, with func(x cue.Value) error) error
+
 	FillPath(path cue.Path, value any) error
 }
 
 type scope struct {
 	root cue.Value
-	mu   sync.RWMutex
+	mu   sync.Mutex
 }
 
 var _ Scope = &scope{}
 
 func (c *scope) Value() cue.Value {
+	return c.root
+}
+
+func (c *scope) DecodePath(path cue.Path, target any) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	return c.root
+	return c.root.LookupPath(path).Decode(target)
 }
 
 func (c *scope) LookupPath(path cue.Path) cue.Value {
@@ -32,6 +40,13 @@ func (c *scope) LookupPath(path cue.Path) cue.Value {
 	defer c.mu.Unlock()
 
 	return c.root.LookupPath(path)
+}
+
+func (c *scope) DecodePathWith(path cue.Path, fn func(v cue.Value) error) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	return fn(c.root.LookupPath(path))
 }
 
 func (c *scope) FillPath(path cue.Path, v any) error {

@@ -26,11 +26,9 @@ type EnvInterface struct {
 	OptionalEnv map[string]string `json:"-"`
 }
 
-var _ cueflow.TaskUnmarshaler = &EnvInterface{}
+var _ cueflow.CueValueUnmarshaler = &EnvInterface{}
 
-func (ei *EnvInterface) UnmarshalTask(t cueflow.Task) error {
-	v := t.Value()
-
+func (ei *EnvInterface) UnmarshalCueValue(v cue.Value) error {
 	i, err := v.Fields(cue.All())
 	if err != nil {
 		return err

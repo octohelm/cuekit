@@ -3,7 +3,6 @@ package runner
 import (
 	"context"
 	"fmt"
-	"github.com/octohelm/cuekit/pkg/cueutil"
 	"io"
 	"log/slog"
 	"maps"
@@ -16,6 +15,7 @@ import (
 	"github.com/octohelm/cuekit/pkg/cueconvert"
 	"github.com/octohelm/cuekit/pkg/cueflow"
 	"github.com/octohelm/cuekit/pkg/cuepath"
+	"github.com/octohelm/cuekit/pkg/cueutil"
 )
 
 type Task interface {
@@ -144,22 +144,32 @@ func (t *taskRunner) Run(ctx context.Context) (err error) {
 
 	doer := v.(TaskDoer)
 
-	cv := t.task.Value()
+	markSkip := false
 
-	dep := cv.LookupPath(PathDep)
+	if err := t.task.Scope().DecodePathWith(t.Path(), func(cv cue.Value) error {
+		dep := cv.LookupPath(PathDep)
 
-	if ctrl := dep.LookupPath(PathControl); ctrl.Exists() {
-		ctrlType, _ := ctrl.String()
-		switch ctrlType {
-		case "skip":
-			needSkip, _ := dep.LookupPath(cue.ParsePath("when")).Bool()
-			if needSkip {
-				if _, ok := doer.(cueflow.TaskFeedback); ok {
-					return t.task.Fill(map[string]any{"$ok": false})
+		if ctrl := dep.LookupPath(PathControl); ctrl.Exists() {
+			ctrlType, _ := ctrl.String()
+			switch ctrlType {
+			case "skip":
+				needSkip, _ := dep.LookupPath(cue.ParsePath("when")).Bool()
+				if needSkip {
+					if _, ok := doer.(cueflow.TaskFeedback); ok {
+						markSkip = true
+					}
+					return nil
 				}
-				return nil
 			}
 		}
+
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	if markSkip {
+		return t.task.Fill(map[string]any{"$ok": false})
 	}
 
 	ctx = cueflow.TaskPathContext.Inject(ctx, t.task.Path().String())

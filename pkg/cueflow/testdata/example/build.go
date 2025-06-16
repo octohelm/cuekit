@@ -30,16 +30,16 @@ type BuildDoStepInterface struct {
 func (x *Build) Do(ctx context.Context) error {
 	t := x.T()
 
-	path := cuepath.Join(t.Value().Path(), cue.ParsePath("input"))
+	path := cuepath.Join(t.Path(), cue.ParsePath("input"))
 
-	if err := t.Scope().LookupPath(path).Decode(&x.Input); err != nil {
+	if err := t.Scope().DecodePath(path, &x.Input); err != nil {
 		return err
 	}
 
 	step := &BuildDoStepInterface{}
 	step.Output = x.Input
 
-	for stepValue, err := range task.Steps(t.Value()) {
+	for stepValue, err := range task.Steps(t.Scope().LookupPath(t.Path())) {
 		if err != nil {
 			return err
 		}
@@ -60,7 +60,7 @@ func (x *Build) Do(ctx context.Context) error {
 		}
 
 		step = &BuildDoStepInterface{}
-		if err := t.Scope().LookupPath(stepPath).Decode(step); err != nil {
+		if err := t.Scope().DecodePath(stepPath, step); err != nil {
 			return fmt.Errorf("decode result failed: %w", err)
 		}
 	}

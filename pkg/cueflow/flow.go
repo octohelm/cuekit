@@ -31,8 +31,8 @@ type BeforeAll interface {
 	BeforeAll() bool
 }
 
-func IsBeforeAll(t Task) bool {
-	return t.Value().LookupPath(TaskBeforeAllPath).Exists()
+func IsBeforeAll(ctl Scope, t Task) bool {
+	return ctl.Value().LookupPath(t.Path()).LookupPath(TaskBeforeAllPath).Exists()
 }
 
 type CanSkip interface {

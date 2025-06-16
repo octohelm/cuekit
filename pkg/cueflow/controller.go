@@ -48,22 +48,30 @@ type Controller struct {
 	*scope
 }
 
-func (c *Controller) Init(v cue.Value) error {
+func (c *Controller) Init(root cue.Value) error {
 	if c.scope == nil {
-		c.scope = &scope{root: v}
+		c.scope = &scope{root: root}
 	}
 
 	r := &graph.Resolver{
 		CreateNode: func(n graph.Node) graph.Node {
 			return &task{
-				Node:  n,
-				scope: c,
+				Node:     n,
+				scope:    c,
+				runnable: isTaskNode(root, n),
 			}
 		},
 		IsPrefix: c.IsPrefix,
 	}
 
-	if err := r.Init(v); err != nil {
+	if err := func() error {
+		// Init will do resolveDeps, may call cue.Value.ReferencePath(), which write status
+		// so have to lock to avoid data racing.
+		c.mu.Lock()
+		defer c.mu.Unlock()
+
+		return r.Init(root)
+	}(); err != nil {
 		return err
 	}
 
@@ -71,8 +79,8 @@ func (c *Controller) Init(v cue.Value) error {
 	c.tasks = map[jsontext.Pointer]*task{}
 
 	for n := range c.Nodes() {
-		if isTaskNode(n) {
-			c.tasks[cuepath.AsJSONPointer(n.Path())] = n.(*task)
+		if t, ok := n.(*task); ok && t.runnable {
+			c.tasks[cuepath.AsJSONPointer(n.Path())] = t
 		}
 	}
 
@@ -83,7 +91,7 @@ func (c *Controller) Run(pctx context.Context) error {
 	eg, ctx := errgroup.WithContext(pctx)
 
 	for t := range c.Tasks() {
-		// only trigger the final task
+		// only trigger the final runnable
 		if t.(*task).rank == 0 {
 			eg.Go(func() error {
 				return t.Run(ctx, func(ctx context.Context, task Task) error {
@@ -129,7 +137,7 @@ func (c *Controller) RunMatched(pctx context.Context, match func(t Task) bool) e
 	}
 
 	for t := range c.Tasks() {
-		// only trigger the matched task
+		// only trigger the matched runnable
 		if match(t) {
 			if collectToPrint != nil {
 				collectToPrint(t)

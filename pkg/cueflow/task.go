@@ -46,6 +46,10 @@ type TaskUnmarshaler interface {
 	UnmarshalTask(t Task) error
 }
 
+type CueValueUnmarshaler interface {
+	UnmarshalCueValue(cueValue cue.Value) error
+}
+
 type task struct {
 	graph.Node
 
@@ -54,10 +58,7 @@ type task struct {
 	completed atomic.Uint64
 	once      sync.Once
 	err       error
-}
-
-func (t *task) Value() cue.Value {
-	return t.scope.LookupPath(t.Path())
+	runnable  bool
 }
 
 func (t *task) Scope() Scope {
@@ -69,12 +70,18 @@ func (t *task) String() string {
 }
 
 func (t *task) Decode(inputs any) error {
+	if u, ok := inputs.(CueValueUnmarshaler); ok {
+		return t.scope.DecodePathWith(t.Path(), func(v cue.Value) error {
+			return u.UnmarshalCueValue(v)
+		})
+	}
+
 	if u, ok := inputs.(TaskUnmarshaler); ok {
 		return u.UnmarshalTask(t)
 	}
 
-	if err := t.Value().Decode(inputs); err != nil {
-		_, _ = fmt.Fprint(os.Stdout, t.Value().Syntax(
+	if err := t.scope.DecodePath(t.Path(), inputs); err != nil {
+		_, _ = fmt.Fprint(os.Stdout, t.scope.Value().Syntax(
 			cue.Concrete(false), // allow incomplete values
 			cue.DisallowCycles(true),
 			cue.Docs(true),
@@ -124,7 +131,7 @@ func (t *task) Run(ctx context.Context, action func(ctx context.Context, task Ta
 }
 
 func (t *task) AddDep(dep graph.Node) {
-	if isTaskNode(t) {
+	if t.runnable {
 		dep.(*task).rank++
 	}
 
@@ -134,7 +141,7 @@ func (t *task) AddDep(dep graph.Node) {
 func (t *task) DepTasks() iter.Seq[Task] {
 	return func(yield func(Task) bool) {
 		for d := range t.Node.Deps() {
-			if isTaskNode(d) {
+			if d.(*task).runnable {
 				if !yield(any(d).(Task)) {
 					return
 				}
@@ -144,12 +151,12 @@ func (t *task) DepTasks() iter.Seq[Task] {
 }
 
 func (t *task) Shape() string {
-	if isTaskNode(t.Node) {
+	if t.runnable {
 		return "step"
 	}
 	return ""
 }
 
-func isTaskNode(n graph.Node) bool {
-	return n.Value().LookupPath(TaskPath).Exists()
+func isTaskNode(root cue.Value, n graph.Node) bool {
+	return root.LookupPath(n.Path()).LookupPath(TaskPath).Exists()
 }

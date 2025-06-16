@@ -11,8 +11,6 @@ import (
 type Node interface {
 	Name() string
 	Path() cue.Path
-	Value() cue.Value
-
 	Deps() iter.Seq[Node]
 }
 
@@ -23,9 +21,9 @@ type NodeAccessor interface {
 var TypePath = cue.ParsePath("$$type.name")
 
 type node struct {
-	name  string
-	value cue.Value
-	deps  map[jsontext.Pointer]Node
+	name string
+	path cue.Path
+	deps map[jsontext.Pointer]Node
 }
 
 var _ Node = &node{}
@@ -35,11 +33,7 @@ func (n *node) Name() string {
 }
 
 func (n *node) Path() cue.Path {
-	return n.value.Path()
-}
-
-func (n *node) Value() cue.Value {
-	return n.value
+	return n.path
 }
 
 func (n *node) Deps() iter.Seq[Node] {
