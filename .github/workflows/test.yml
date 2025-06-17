@@ -1,0 +1,22 @@
+name: test
+
+on:
+  push:
+    branches:
+      - "main"
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: extractions/setup-just@v3
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '>=1.24.0'
+
+      - run: just test-race
+
