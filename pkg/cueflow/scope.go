@@ -18,8 +18,8 @@ type Scope interface {
 }
 
 type scope struct {
+	mu   sync.RWMutex
 	root cue.Value
-	mu   sync.Mutex
 }
 
 var _ Scope = &scope{}

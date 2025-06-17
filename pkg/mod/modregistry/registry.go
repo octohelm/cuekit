@@ -25,7 +25,9 @@ func NewRegistry(m *module.Module) (modconfig.Registry, error) {
 
 	r := &resolver{
 		CacheDir: getEnv("CUE_CACHE_DIR", filepath.Join(userCacheDir, "cue")),
-		Root:     m,
+	}
+	if err := r.Init(m); err != nil {
+		return nil, err
 	}
 
 	std, err := modconfig.NewRegistry(&modconfig.Config{
@@ -50,9 +52,10 @@ func NewRegistry(m *module.Module) (modconfig.Registry, error) {
 }
 
 type registry struct {
-	mem   modmem.Registry
+	mem modmem.Registry
+	std modconfig.Registry
+
 	local *resolver
-	std   modconfig.Registry
 }
 
 func (r *registry) Fetch(ctx context.Context, mv module.Version) (loc module.SourceLoc, err error) {
@@ -64,18 +67,18 @@ func (r *registry) Fetch(ctx context.Context, mv module.Version) (loc module.Sou
 
 			if err := mod.Load(true); err == nil {
 				if version := mod.Overwrites.Version; version != "" {
-					r.local.Root.Overwrites.AddDep(mod.Module, &modfile.DepOverwrite{
+					r.local.AddOverwrite(mod.File.Module, &modfile.DepOverwrite{
 						Path:    mod.Overwrites.Path,
 						Version: version,
 					})
 				}
 			}
 
-			_ = r.local.Root.Save()
+			_ = r.local.Commit()
 		}
 	}()
 
-	if depOverwrite, ok := r.local.Root.GetDepOverwrite(mv.Path()); ok {
+	if depOverwrite, ok := r.local.GetDepOverwrite(mv.Path()); ok {
 		if depOverwrite.IsLocalReplacement() {
 			return r.local.ResolveLocal(ctx, depOverwrite.Path, mv)
 		}
@@ -91,7 +94,7 @@ func (r *registry) Fetch(ctx context.Context, mv module.Version) (loc module.Sou
 	}
 
 	if m, ok := r.mem.Resolve(mv.Path()); ok {
-		return module.SourceLocOfOSDir(r.mem.CacheDir(r.local.CacheDir, m.Module, mv.Version())), nil
+		return module.SourceLocOfOSDir(r.mem.CacheDir(r.local.CacheDir, m.File.Module, mv.Version())), nil
 	}
 
 	sl, err := r.std.Fetch(ctx, mv)
@@ -115,14 +118,17 @@ func (r *registry) isNotExistsOfCueRegistry(err error) bool {
 
 func (r *registry) Requirements(ctx context.Context, mv module.Version) ([]module.Version, error) {
 	if m, ok := r.mem.Resolve(mv.Path()); ok {
-		m.SourceLoc = module.SourceLocOfOSDir(r.mem.CacheDir(r.local.CacheDir, m.Module, m.Overwrites.Version))
+		m.SourceLoc = module.SourceLocOfOSDir(
+			r.mem.CacheDir(r.local.CacheDir, m.File.Module, m.Overwrites.Version),
+		)
+
 		if err := m.Load(true); err != nil {
 			return nil, err
 		}
-		return m.DepVersions(), nil
+		return m.File.DepVersions(), nil
 	}
 
-	if depOverwrite, ok := r.local.Root.GetDepOverwrite(mv.Path()); ok {
+	if depOverwrite, ok := r.local.GetDepOverwrite(mv.Path()); ok {
 		if depOverwrite.IsLocalReplacement() {
 			s, err := r.local.ResolveLocal(ctx, depOverwrite.Path, mv)
 			if err != nil {
@@ -132,7 +138,7 @@ func (r *registry) Requirements(ctx context.Context, mv module.Version) ([]modul
 			if err := m.Load(false); err != nil {
 				return nil, err
 			}
-			return m.DepVersions(), nil
+			return m.File.DepVersions(), nil
 		}
 
 		if depOverwrite.Path != "" {
@@ -152,7 +158,7 @@ func (r *registry) Requirements(ctx context.Context, mv module.Version) ([]modul
 		if err := m.Load(false); err != nil {
 			return nil, err
 		}
-		return m.DepVersions(), nil
+		return m.File.DepVersions(), nil
 	}
 
 	return r.std.Requirements(ctx, mv)
@@ -163,7 +169,7 @@ func (r *registry) ModuleVersions(ctx context.Context, mpath string) ([]string, 
 		return []string{m.Overwrites.Version}, nil
 	}
 
-	if depOverwrite, ok := r.local.Root.GetDepOverwrite(mpath); ok {
+	if depOverwrite, ok := r.local.GetDepOverwrite(mpath); ok {
 		if depOverwrite.IsLocalReplacement() {
 			return []string{"v0.0.0"}, nil
 		}

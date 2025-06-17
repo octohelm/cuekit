@@ -8,6 +8,8 @@ package counter
 
 import (
 	"flag"
+	"os"
+
 	"golang.org/x/telemetry/counter"
 )
 
@@ -19,7 +21,7 @@ func OpenCalled() bool { return openCalled }
 // on the current platform (and does nothing otherwise).
 func Open() {
 	openCalled = true
-	//counter.OpenDir(os.Getenv("TEST_TELEMETRY_DIR"))
+	counter.OpenDir(os.Getenv("TEST_TELEMETRY_DIR"))
 }
 
 // Inc increments the counter with the given name.

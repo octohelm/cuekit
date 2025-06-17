@@ -7,7 +7,6 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
-	"sync"
 
 	cuemodfile "cuelang.org/go/mod/modfile"
 	"cuelang.org/go/mod/module"
@@ -24,16 +23,24 @@ type OSRootFS = module.OSRootFS
 type Module struct {
 	module.SourceLoc
 	modfile.File
-	Overwrites *modfile.FileOverwrites
 
-	mu sync.Mutex
+	Overwrites *modfile.FileOverwrites
 }
 
 func (m *Module) SourceRoot() string {
 	if osRoot, ok := m.FS.(OSRootFS); ok {
 		return filepath.Join(osRoot.OSRoot(), m.Dir)
 	}
+
 	return fmt.Sprintf("mem:%s", m.Dir)
+}
+
+func (m *Module) SetDefaults() {
+	if m.Language == nil {
+		m.Language = &modfile.Language{
+			Version: modfile.GetCueVersion(),
+		}
+	}
 }
 
 func (m *Module) GetDepOverwrite(mpath string) (*modfile.DepOverwrite, bool) {
@@ -89,40 +96,26 @@ func (m *Module) loadModule(strict bool) error {
 	return nil
 }
 
-func (m *Module) AddDep(mpath string, dep *cuemodfile.Dep) {
-	if m.File.Deps == nil {
-		m.File.Deps = map[string]*cuemodfile.Dep{}
-	}
-	m.File.Deps[mpath] = dep
-}
-
 func (mm *Module) Save() error {
-	mm.mu.Lock()
-	defer mm.mu.Unlock()
-
 	m := &Module{
 		SourceLoc:  mm.SourceLoc,
 		File:       mm.File,
 		Overwrites: mm.Overwrites,
 	}
 
-	if m.Language == nil {
-		m.Language = &modfile.Language{
-			Version: modfile.GetCueVersion(),
-		}
-	}
+	m.SetDefaults()
 
 	if !m.Overwrites.IsZero() {
 		for mpath, d := range m.Overwrites.Deps {
 			if d.IsLocalReplacement() {
-				m.AddDep(mpath, &cuemodfile.Dep{
+				m.addDep(mpath, &cuemodfile.Dep{
 					Version: "v0.0.0",
 				})
 				continue
 			}
 
 			if d.Version != "" {
-				m.AddDep(mpath, &cuemodfile.Dep{
+				m.addDep(mpath, &cuemodfile.Dep{
 					Version: d.Version,
 				})
 			}
@@ -147,10 +140,18 @@ func (mm *Module) Save() error {
 	return nil
 }
 
+func (m *Module) addDep(mpath string, dep *cuemodfile.Dep) {
+	if m.File.Deps == nil {
+		m.File.Deps = map[string]*cuemodfile.Dep{}
+	}
+
+	m.File.Deps[mpath] = dep
+}
+
 func (m *Module) Tidy() {
-	if len(m.Deps) > 0 {
+	if len(m.File.Deps) > 0 {
 		for mpath := range m.Overwrites.Deps {
-			if _, ok := m.Deps[mpath]; !ok {
+			if _, ok := m.File.Deps[mpath]; !ok {
 				// remove unused dep overwrite
 				delete(m.Overwrites.Deps, mpath)
 			}

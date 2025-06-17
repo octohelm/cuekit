@@ -18,9 +18,17 @@ import (
 )
 
 type resolver struct {
-	Root     *module.Module
 	CacheDir string
+
 	resolved sync.Map
+
+	mu   sync.Mutex
+	root *module.Module
+}
+
+func (r *resolver) Init(root *module.Module) error {
+	r.root = root
+	return nil
 }
 
 func (r *resolver) Fetch(ctx context.Context, m module.Version) (module.SourceLoc, error) {
@@ -55,7 +63,7 @@ func (r *resolver) ModuleVersions(ctx context.Context, mpath string) ([]string, 
 		for _, version := range versions {
 			v, err := module.NewVersion(path, version)
 			if err == nil {
-				r.Root.Overwrites.AddDep(v.Path(), &modfile.DepOverwrite{
+				r.root.Overwrites.AddDep(v.Path(), &modfile.DepOverwrite{
 					Path:    path,
 					Version: v.Version(),
 				})
@@ -73,14 +81,14 @@ func (r *resolver) ModuleVersions(ctx context.Context, mpath string) ([]string, 
 
 func (r *resolver) ResolveLocal(ctx context.Context, path string, mv module.Version) (module.SourceLoc, error) {
 	do, _ := r.resolved.LoadOrStore(fmt.Sprintf("%s@%s", mv.Path(), mv.Version()), sync.OnceValues(func() (module.SourceLoc, error) {
-		src := filepath.Join(r.Root.SourceRoot(), path)
+		src := filepath.Join(r.root.SourceRoot(), path)
 
 		info, err := os.Stat(src)
 		if err != nil || !info.IsDir() {
 			return module.SourceLoc{}, fmt.Errorf("replace source dir %s must exists: %w", src, err)
 		}
 
-		if links, ok := r.Root.Overwrites.ModLinks(mv.Path()); ok {
+		if links, ok := r.root.Overwrites.ModLinks(mv.Path()); ok {
 			for dst, link := range links {
 				if err := r.syncAsLink(ctx, dst, src, link); err != nil {
 					return module.SourceLoc{}, fmt.Errorf("sync link as %s failed: %w", dst, err)
@@ -101,7 +109,7 @@ func (r *resolver) Resolve(ctx context.Context, mpath string, version string) (m
 			return module.SourceLoc{}, err
 		}
 
-		if links, ok := r.Root.Overwrites.ModLinks(mpath); ok {
+		if links, ok := r.root.Overwrites.ModLinks(mpath); ok {
 			for dst, link := range links {
 				if err := r.syncAsLink(ctx, dst, info.Dir, link); err != nil {
 					return module.SourceLoc{}, fmt.Errorf("sync link as %s failed: %w", dst, err)
@@ -144,7 +152,7 @@ func (r *resolver) syncAsLink(ctx context.Context, dst, src string, link *modfil
 		return fmt.Errorf("invalid link dest: %s", dst)
 	}
 
-	outDir := filepath.Join(r.Root.SourceRoot(), dst)
+	outDir := filepath.Join(r.root.SourceRoot(), dst)
 
 	if err := os.RemoveAll(outDir); err != nil {
 		return fmt.Errorf("clean %s failed: %w", outDir, err)
@@ -196,15 +204,37 @@ func (r *resolver) convertToCueMod(ctx context.Context, mpath string, info *gomo
 	// could empty
 	_ = mod.Load(false)
 
-	mod.Module = mpath
+	mod.File.Module = mpath
 	mod.Overwrites.Path = info.Path
 	mod.Overwrites.Version = info.Version
 
 	// switch to outDir
 	mod.SourceLoc = module.SourceLocOfOSDir(outDir)
+
 	if err := mod.Save(); err != nil {
 		return module.SourceLoc{}, err
 	}
 
 	return mod.SourceLoc, nil
+}
+
+func (r *resolver) GetDepOverwrite(path string) (*modfile.DepOverwrite, bool) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	return r.root.GetDepOverwrite(path)
+}
+
+func (r *resolver) Commit() error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	return r.root.Save()
+}
+
+func (r *resolver) AddOverwrite(mpath string, m *modfile.DepOverwrite) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	r.root.Overwrites.AddDep(mpath, m)
 }

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"golang.org/x/mod/module"
 
@@ -53,8 +54,15 @@ func RepoRootForImportPath(importPath string) (string, error) {
 	return r.Root, nil
 }
 
+var goSettingOnce = &sync.Once{}
+
 // Get Module
 func Get(ctx context.Context, path string, version string, verbose bool) *Module {
+	goSettingOnce.Do(func() {
+		cfg.BuildX = verbose
+		modload.ForceUseModules = true
+	})
+
 	mv := module.Version{Path: path, Version: version}
 	p, err := modfetch.DownloadDir(ctx, mv)
 	if err == nil {
@@ -66,10 +74,6 @@ func Get(ctx context.Context, path string, version string, verbose bool) *Module
 			Sum:     modfetch.Sum(ctx, mv),
 		}
 	}
-
-	modload.ForceUseModules = true
-
-	cfg.BuildX = verbose
 
 	if version == "" {
 		version = "latest"
