@@ -14,6 +14,7 @@ func FuzzResolver(f *testing.F) {
 	f.Add("in_loop")
 	f.Add("from_slice")
 	f.Add("sub_field")
+	f.Add("result_as_field_default")
 
 	f.Fuzz(func(t *testing.T, c string) {
 		b := bdd.FromT(t)

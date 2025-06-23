@@ -5,12 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"iter"
-	"os"
 	"slices"
 	"sync"
 	"sync/atomic"
 
 	"cuelang.org/go/cue"
+	cueformat "cuelang.org/go/cue/format"
 	"github.com/octohelm/cuekit/pkg/cueflow/graph"
 	"github.com/octohelm/cuekit/pkg/cuepath"
 	contextx "github.com/octohelm/x/context"
@@ -81,13 +81,13 @@ func (t *task) Decode(inputs any) error {
 	}
 
 	if err := t.scope.DecodePath(t.Path(), inputs); err != nil {
-		_, _ = fmt.Fprint(os.Stdout, t.scope.Value().Syntax(
+		raw, _ := cueformat.Node(t.scope.Value().Syntax(
 			cue.Concrete(false), // allow incomplete values
 			cue.DisallowCycles(true),
 			cue.Docs(true),
 			cue.All(),
 		))
-		_, _ = fmt.Fprintln(os.Stdout)
+		fmt.Println(string(raw))
 		return err
 	}
 

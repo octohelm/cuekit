@@ -195,25 +195,43 @@ func (r *Resolver) referencePathsOf(target cue.Value, resolved map[string]bool) 
 				}
 
 				if !hasDep {
-					// to handle some case as dep
-					// result: _pull.output.rootfs
-					op, _ := v.Expr()
-					switch op {
-					case cue.SelectorOp, cue.IndexOp:
-						root, p0 := v.ReferencePath()
-						if root.Exists() {
-							if !uniqueYield(cuepath.Parent(p0), nil) {
-								return
-							}
-
-							if !cuepath.Prefix(target.Path(), p0) {
-								for p1, err := range r.referencePathsOf(r.root.LookupPath(p0), resolved) {
-									if !uniqueYield(p1, err) {
-										return
-									}
-								}
-							}
+					for p1, err := range r.referencePathsFromReferencePath(v, target, resolved) {
+						if !uniqueYield(p1, err) {
+							return
 						}
+					}
+				}
+			}
+		}
+	}
+}
+
+func (r *Resolver) referencePathsFromReferencePath(v cue.Value, target cue.Value, resolved map[string]bool) iter.Seq2[cue.Path, error] {
+	return func(yield func(cue.Path, error) bool) {
+		op, values := v.Expr()
+		switch op {
+		case cue.SelectorOp, cue.IndexOp:
+			// to handle some case as dep
+			// result: _pull.output.rootfs
+			root, p0 := v.ReferencePath()
+			if root.Exists() {
+				if !yield(cuepath.Parent(p0), nil) {
+					return
+				}
+
+				if !cuepath.Prefix(target.Path(), p0) {
+					for p1, err := range r.referencePathsOf(r.root.LookupPath(p0), resolved) {
+						if !yield(p1, err) {
+							return
+						}
+					}
+				}
+			}
+		case cue.InterpolationOp:
+			for _, x := range values {
+				for p1, err := range r.referencePathsFromReferencePath(x, target, resolved) {
+					if !yield(p1, err) {
+						return
 					}
 				}
 			}
