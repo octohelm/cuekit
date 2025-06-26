@@ -10,18 +10,18 @@ require (
 	github.com/octohelm/x v0.0.0-20250409031213-9c254440c2b8
 )
 
-replace cuelang.org/go => github.com/morlay/cue v0.13.1-0.20250612070309-e53135da282a
+replace cuelang.org/go => github.com/morlay/cue v0.13.3-0.20250626041809-f095d2aa6c05
 
 require (
-	cuelang.org/go v0.13.1
+	cuelang.org/go v0.13.2
 	github.com/fatih/color v1.18.0
-	github.com/go-json-experiment/json v0.0.0-20250517221953-25912455fbc8
+	github.com/go-json-experiment/json v0.0.0-20250625182306-a9cfae7f3654
 	github.com/gobwas/glob v0.2.3
 	github.com/octohelm/gengo v0.0.0-20250418031154-d14a228621d4
 	github.com/onsi/gomega v1.37.0
 	golang.org/x/mod v0.25.0
 	golang.org/x/sync v0.15.0
-	golang.org/x/telemetry v0.0.0-20250613181904-e50bbf1d8fa3
+	golang.org/x/telemetry v0.0.0-20250624183230-fef9409b2ec8
 	golang.org/x/tools v0.34.0
 )
 
