@@ -15,12 +15,13 @@ import (
 	"github.com/octohelm/cuekit/internal/gomod"
 	"github.com/octohelm/cuekit/pkg/mod/modfile"
 	"github.com/octohelm/cuekit/pkg/mod/module"
+	"github.com/octohelm/x/sync/singleflight"
 )
 
 type resolver struct {
 	CacheDir string
 
-	resolved sync.Map
+	resolved singleflight.GroupValue[moduleVersion, module.SourceLoc]
 
 	mu   sync.Mutex
 	root *module.Module
@@ -79,8 +80,13 @@ func (r *resolver) ModuleVersions(ctx context.Context, mpath string) ([]string, 
 	return versions, nil
 }
 
+type moduleVersion struct {
+	Path    string
+	Version string
+}
+
 func (r *resolver) ResolveLocal(ctx context.Context, path string, mv module.Version) (module.SourceLoc, error) {
-	do, _ := r.resolved.LoadOrStore(fmt.Sprintf("%s@%s", mv.Path(), mv.Version()), sync.OnceValues(func() (module.SourceLoc, error) {
+	modLoc, err, _ := r.resolved.Do(moduleVersion{Path: mv.Path(), Version: mv.Version()}, func() (module.SourceLoc, error) {
 		src := filepath.Join(r.root.SourceRoot(), path)
 
 		info, err := os.Stat(src)
@@ -97,13 +103,13 @@ func (r *resolver) ResolveLocal(ctx context.Context, path string, mv module.Vers
 		}
 
 		return module.SourceLocOfOSDir(src), nil
-	}))
+	})
 
-	return do.(func() (module.SourceLoc, error))()
+	return modLoc, err
 }
 
 func (r *resolver) Resolve(ctx context.Context, mpath string, version string) (module.SourceLoc, error) {
-	do, _ := r.resolved.LoadOrStore(fmt.Sprintf("%s@%s", mpath, version), sync.OnceValues(func() (module.SourceLoc, error) {
+	modLoc, err, _ := r.resolved.Do(moduleVersion{Path: mpath, Version: version}, func() (module.SourceLoc, error) {
 		info, err := r.gomodDownload(ctx, mpath, version)
 		if err != nil {
 			return module.SourceLoc{}, err
@@ -122,9 +128,8 @@ func (r *resolver) Resolve(ctx context.Context, mpath string, version string) (m
 			return module.SourceLoc{}, err
 		}
 		return loc, nil
-	}))
-
-	return do.(func() (module.SourceLoc, error))()
+	})
+	return modLoc, err
 }
 
 func (r *resolver) gomodDownload(ctx context.Context, mpath string, version string) (*gomod.Module, error) {
