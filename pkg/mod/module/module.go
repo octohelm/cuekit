@@ -129,7 +129,7 @@ func (mm *Module) Save() error {
 		}
 	}
 
-	data, err := m.File.Format()
+	data, err := cuemodfile.Format(&m.File)
 	if err != nil {
 		return err
 	}

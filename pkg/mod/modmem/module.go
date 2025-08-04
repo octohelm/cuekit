@@ -2,6 +2,7 @@ package modmem
 
 import (
 	"context"
+	cuemodfile "cuelang.org/go/mod/modfile"
 
 	"cuelang.org/go/mod/module"
 	"github.com/octohelm/cuekit/pkg/mod/modfile"
@@ -34,7 +35,7 @@ func NewModule(path string, version string, commitSource func(ctx context.Contex
 		return nil, err
 	}
 
-	data, err := m.File.Format()
+	data, err := cuemodfile.Format(&m.File)
 	if err != nil {
 		return nil, err
 	}
