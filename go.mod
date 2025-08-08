@@ -19,7 +19,7 @@ require (
 	github.com/go-json-experiment/json v0.0.0-20250725192818-e39067aee2d2
 	github.com/gobwas/glob v0.2.3
 	github.com/onsi/gomega v1.38.0
-	golang.org/x/mod v0.26.0
+	golang.org/x/mod v0.27.0
 	golang.org/x/sync v0.16.0
 	golang.org/x/telemetry v0.0.0-20250729135900-28f32e417a03
 	golang.org/x/tools v0.35.0
