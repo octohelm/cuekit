@@ -19,10 +19,10 @@ require (
 	github.com/go-json-experiment/json v0.0.0-20250725192818-e39067aee2d2
 	github.com/gobwas/glob v0.2.3
 	github.com/onsi/gomega v1.38.0
-	golang.org/x/mod v0.26.0
+	golang.org/x/mod v0.27.0
 	golang.org/x/sync v0.16.0
-	golang.org/x/telemetry v0.0.0-20250729135900-28f32e417a03
-	golang.org/x/tools v0.35.0
+	golang.org/x/telemetry v0.0.0-20250807160809-1a19826ec488
+	golang.org/x/tools v0.36.0
 )
 
 require (
@@ -40,10 +40,10 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/protocolbuffers/txtpbfmt v0.0.0-20250627152318-f293424e46b5 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
-	golang.org/x/net v0.42.0 // indirect
+	golang.org/x/net v0.43.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
-	golang.org/x/sys v0.34.0 // indirect
-	golang.org/x/text v0.27.0 // indirect
+	golang.org/x/sys v0.35.0 // indirect
+	golang.org/x/text v0.28.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	mvdan.cc/gofumpt v0.8.0 // indirect
 )
