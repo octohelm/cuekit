@@ -1,6 +1,6 @@
 module github.com/octohelm/cuekit
 
-go 1.24.5
+go 1.25.0
 
 tool mvdan.cc/gofumpt
 
@@ -11,18 +11,18 @@ require (
 	github.com/octohelm/x v0.0.0-20250718061117-5256cd84ed4c
 )
 
-replace cuelang.org/go => github.com/morlay/cue v0.14.0-0.dev.0.20250804064919-578f26a032fa
+replace cuelang.org/go => github.com/morlay/cue v0.14.2-0.20250813133710-6438607e40c1
 
 require (
-	cuelang.org/go v0.14.0
+	cuelang.org/go v0.14.1
 	github.com/fatih/color v1.18.0
 	github.com/go-json-experiment/json v0.0.0-20250725192818-e39067aee2d2
 	github.com/gobwas/glob v0.2.3
 	github.com/onsi/gomega v1.38.0
-	golang.org/x/mod v0.26.0
+	golang.org/x/mod v0.27.0
 	golang.org/x/sync v0.16.0
-	golang.org/x/telemetry v0.0.0-20250729135900-28f32e417a03
-	golang.org/x/tools v0.35.0
+	golang.org/x/telemetry v0.0.0-20250807160809-1a19826ec488
+	golang.org/x/tools v0.36.0
 )
 
 require (
@@ -40,10 +40,10 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/protocolbuffers/txtpbfmt v0.0.0-20250627152318-f293424e46b5 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
-	golang.org/x/net v0.42.0 // indirect
+	golang.org/x/net v0.43.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
-	golang.org/x/sys v0.34.0 // indirect
-	golang.org/x/text v0.27.0 // indirect
+	golang.org/x/sys v0.35.0 // indirect
+	golang.org/x/text v0.28.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	mvdan.cc/gofumpt v0.8.0 // indirect
 )
