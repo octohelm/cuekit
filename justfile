@@ -1,4 +1,5 @@
 test:
+    go test -count=1 -v --failfast ./internal/gomod
     go test -count=1 -v --failfast ./pkg/...
 
 test-race:

@@ -6,10 +6,9 @@ import (
 	"strings"
 	_ "unsafe"
 
+	"github.com/octohelm/cuekit/pkg/version"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/mod/module"
-
-	"github.com/octohelm/cuekit/pkg/version"
 
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch/codehost"
@@ -17,22 +16,22 @@ import (
 )
 
 //go:linkname newCodeRepo github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch.newCodeRepo
-func newCodeRepo(code codehost.Repo, codeRoot, path string) (modfetch.Repo, error)
+func newCodeRepo(code codehost.Repo, codeRoot, subdir, path string) (modfetch.Repo, error)
 
 //go:linkname lookupCodeRepo github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch.lookupCodeRepo
-func lookupCodeRepo(ctx context.Context, rr *vcs.RepoRoot) (codehost.Repo, error)
+func lookupCodeRepo(ctx context.Context, rr *vcs.RepoRoot, local bool) (codehost.Repo, error)
 
 func finalLookupCodeRepo(ctx context.Context, rr *vcs.RepoRoot, localOk bool) (codehost.Repo, error) {
 	if strings.ToLower(rr.VCS.Name) == "git" && localOk {
 		return codehost.NewRepo(ctx, "git", rr.Root, true)
 	}
-	return lookupCodeRepo(ctx, rr)
+	return lookupCodeRepo(ctx, rr, localOk)
 }
 
 type RevInfo = modfetch.RevInfo
 
 func RevInfoFromDir(ctx context.Context, dir string) (*RevInfo, error) {
-	rootDir, c, err := vcs.FromDir(dir, "", true)
+	rootDir, c, err := vcs.FromDir(dir, "")
 	if err != nil {
 		return nil, err
 	}
@@ -73,9 +72,9 @@ func RevInfoFromDir(ctx context.Context, dir string) (*RevInfo, error) {
 		}
 	}
 
-	r, err := newCodeRepo(code, rr.Root, importPath)
+	r, err := newCodeRepo(code, rr.Root, rr.SubDir, importPath)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("resolve code repo failed: %w", err)
 	}
 
 	info, err := r.Stat(ctx, head.Revision)
