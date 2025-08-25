@@ -14,12 +14,11 @@ replace cuelang.org/go => github.com/morlay/cue v0.13.3-0.20250626041809-f095d2a
 
 require (
 	cuelang.org/go v0.13.2
-	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/fatih/color v1.18.0
 	github.com/go-json-experiment/json v0.0.0-20250813233538-9b1f9ea2e11b
 	github.com/gobwas/glob v0.2.3
 	github.com/octohelm/gengo v0.0.0-20250711045910-061ca3315825
-	github.com/onsi/gomega v1.38.0
+	github.com/onsi/gomega v1.38.1
 	golang.org/x/mod v0.27.0
 	golang.org/x/sync v0.16.0
 	golang.org/x/telemetry v0.0.0-20250807160809-1a19826ec488
@@ -41,6 +40,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/protocolbuffers/txtpbfmt v0.0.0-20250129171521-feedd8250727 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
+	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/net v0.43.0 // indirect
 	golang.org/x/oauth2 v0.29.0 // indirect
 	golang.org/x/sys v0.35.0 // indirect
