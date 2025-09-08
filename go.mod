@@ -14,14 +14,13 @@ replace cuelang.org/go => github.com/morlay/cue v0.13.3-0.20250626041809-f095d2a
 
 require (
 	cuelang.org/go v0.13.2
-	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/fatih/color v1.18.0
 	github.com/go-json-experiment/json v0.0.0-20250813233538-9b1f9ea2e11b
 	github.com/gobwas/glob v0.2.3
 	github.com/octohelm/gengo v0.0.0-20250711045910-061ca3315825
 	github.com/onsi/gomega v1.38.0
 	golang.org/x/mod v0.27.0
-	golang.org/x/sync v0.16.0
+	golang.org/x/sync v0.17.0
 	golang.org/x/telemetry v0.0.0-20250807160809-1a19826ec488
 	golang.org/x/tools v0.36.0
 )
