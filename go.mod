@@ -18,7 +18,7 @@ require (
 	github.com/go-json-experiment/json v0.0.0-20250813233538-9b1f9ea2e11b
 	github.com/gobwas/glob v0.2.3
 	github.com/octohelm/gengo v0.0.0-20250909020815-1e94629296bc
-	github.com/onsi/gomega v1.38.0
+	github.com/onsi/gomega v1.38.2
 	golang.org/x/mod v0.28.0
 	golang.org/x/sync v0.17.0
 	golang.org/x/telemetry v0.0.0-20250908211612-aef8a434d053
@@ -40,6 +40,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/protocolbuffers/txtpbfmt v0.0.0-20250903173655-cf07efcaeff7 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
+	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/net v0.44.0 // indirect
 	golang.org/x/oauth2 v0.31.0 // indirect
 	golang.org/x/sys v0.36.0 // indirect
