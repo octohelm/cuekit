@@ -22,7 +22,7 @@ require (
 	golang.org/x/mod v0.28.0
 	golang.org/x/sync v0.17.0
 	golang.org/x/telemetry v0.0.0-20250908211612-aef8a434d053
-	golang.org/x/tools v0.36.0
+	golang.org/x/tools v0.37.0
 )
 
 require (
