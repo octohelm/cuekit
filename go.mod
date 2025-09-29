@@ -1,13 +1,13 @@
 module github.com/octohelm/cuekit
 
-go 1.25.0
+go 1.25.1
 
 tool mvdan.cc/gofumpt
 
 require (
-	github.com/go-courier/logr v0.3.2
+	github.com/go-courier/logr v0.4.0
 	github.com/octohelm/unifs v0.0.0-20250909021328-29364e184e61
-	github.com/octohelm/x v0.0.0-20250905103750-d1a271ae07dd
+	github.com/octohelm/x v0.0.0-20250928045151-6a49847969fd
 )
 
 replace cuelang.org/go => github.com/morlay/cue v0.13.3-0.20250626041809-f095d2aa6c05
@@ -15,14 +15,14 @@ replace cuelang.org/go => github.com/morlay/cue v0.13.3-0.20250626041809-f095d2a
 require (
 	cuelang.org/go v0.14.1
 	github.com/fatih/color v1.18.0
-	github.com/go-json-experiment/json v0.0.0-20250813233538-9b1f9ea2e11b
+	github.com/go-json-experiment/json v0.0.0-20250910080747-cc2cfa0554c3
 	github.com/gobwas/glob v0.2.3
 	github.com/octohelm/gengo v0.0.0-20250909020815-1e94629296bc
 	github.com/onsi/gomega v1.38.0
 	golang.org/x/mod v0.28.0
 	golang.org/x/sync v0.17.0
 	golang.org/x/telemetry v0.0.0-20250908211612-aef8a434d053
-	golang.org/x/tools v0.36.0
+	golang.org/x/tools v0.37.0
 )
 
 require (
