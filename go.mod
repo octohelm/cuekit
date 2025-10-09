@@ -19,10 +19,10 @@ require (
 	github.com/gobwas/glob v0.2.3
 	github.com/octohelm/gengo v0.0.0-20250909020815-1e94629296bc
 	github.com/onsi/gomega v1.38.0
-	golang.org/x/mod v0.28.0
+	golang.org/x/mod v0.29.0
 	golang.org/x/sync v0.17.0
 	golang.org/x/telemetry v0.0.0-20250908211612-aef8a434d053
-	golang.org/x/tools v0.36.0
+	golang.org/x/tools v0.37.0
 )
 
 require (
