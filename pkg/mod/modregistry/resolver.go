@@ -11,10 +11,10 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/go-courier/logr"
 	"github.com/octohelm/cuekit/internal/gomod"
 	"github.com/octohelm/cuekit/pkg/mod/modfile"
 	"github.com/octohelm/cuekit/pkg/mod/module"
+	"github.com/octohelm/x/logr"
 	"github.com/octohelm/x/sync/singleflight"
 )
 

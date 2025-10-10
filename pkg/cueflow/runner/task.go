@@ -11,11 +11,11 @@ import (
 
 	"cuelang.org/go/cue"
 	"github.com/fatih/color"
-	"github.com/go-courier/logr"
 	"github.com/octohelm/cuekit/pkg/cueconvert"
 	"github.com/octohelm/cuekit/pkg/cueflow"
 	"github.com/octohelm/cuekit/pkg/cuepath"
 	"github.com/octohelm/cuekit/pkg/cueutil"
+	"github.com/octohelm/x/logr"
 )
 
 type Task interface {

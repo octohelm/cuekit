@@ -207,8 +207,19 @@ func (r *Resolver) referencePathsOf(target cue.Value, resolved map[string]bool) 
 }
 
 func (r *Resolver) referencePathsFromReferencePath(v cue.Value, target cue.Value, resolved map[string]bool) iter.Seq2[cue.Path, error] {
+	safeExpr := func(v cue.Value) (op cue.Op, values []cue.Value) {
+		defer func() {
+			// ugly catch
+			// FIXME until
+			_ = recover()
+		}()
+
+		op, values = v.Expr()
+		return op, values
+	}
+
 	return func(yield func(cue.Path, error) bool) {
-		op, values := v.Expr()
+		op, values := safeExpr(v)
 		switch op {
 		case cue.SelectorOp, cue.IndexOp:
 			// to handle some case as dep

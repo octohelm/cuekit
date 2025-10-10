@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
-	. "github.com/onsi/gomega"
+	testingx "github.com/octohelm/x/testing"
 )
 
 func TestDownload(t *testing.T) {
@@ -25,7 +25,7 @@ func TestDownload(t *testing.T) {
 			t.Run("get "+p+"@"+v, func(t *testing.T) {
 				e := Get(ctx, p, v, true)
 				t.Log(e.Path, e.Version, e.Dir, e.Sum)
-				NewWithT(t).Expect(e.Error).To(BeEmpty())
+				testingx.Expect(t, e.Error, testingx.Be(""))
 			})
 		}
 	})
@@ -42,7 +42,7 @@ go 1.22
 			t.Run("get "+p+"@"+v, func(t *testing.T) {
 				e := Get(ctx, p, v, true)
 				t.Log(e.Path, e.Version, e.Dir, e.Sum)
-				NewWithT(t).Expect(e.Error).To(BeEmpty())
+				testingx.Expect(t, e.Error, testingx.Be(""))
 			})
 		}
 	})
