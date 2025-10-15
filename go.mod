@@ -9,17 +9,17 @@ require (
 	github.com/octohelm/x v0.0.0-20251009020353-8be04f917d90
 )
 
-replace cuelang.org/go => github.com/morlay/cue v0.14.2-0.20251010050557-94a1135d54dd
+replace cuelang.org/go => github.com/morlay/cue v0.14.3-0.20251015060733-4c79745edb01
 
 require (
-	cuelang.org/go v0.14.1
+	cuelang.org/go v0.14.2
 	github.com/fatih/color v1.18.0
 	github.com/go-json-experiment/json v0.0.0-20250910080747-cc2cfa0554c3
 	github.com/gobwas/glob v0.2.3
 	github.com/octohelm/gengo v0.0.0-20250928050614-7aa009184957
 	golang.org/x/mod v0.29.0
 	golang.org/x/sync v0.17.0
-	golang.org/x/telemetry v0.0.0-20251009181524-91c411e14f39
+	golang.org/x/telemetry v0.0.0-20251014153721-24f779f6aaef
 	golang.org/x/tools v0.38.0
 )
 
