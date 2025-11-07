@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const CacheProg = true
-const CacheProgInt = 1
+const (
+	CacheProg    = true
+	CacheProgInt = 1
+)

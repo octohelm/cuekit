@@ -8,7 +8,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/lazyregexp"
 	"io"
 	"io/fs"
 	"os"
@@ -23,6 +22,7 @@ import (
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/lockedfile"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/par"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/lazyregexp"
 )
 
 // A VCSError indicates an error using a version control system.

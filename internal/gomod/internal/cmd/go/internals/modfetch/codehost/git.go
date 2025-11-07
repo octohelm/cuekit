@@ -25,12 +25,12 @@ import (
 	"sync"
 	"time"
 
+	"golang.org/x/mod/semver"
+
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/lockedfile"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/web"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/par"
-
-	"golang.org/x/mod/semver"
 )
 
 // A notExistError wraps another error to retain its original text

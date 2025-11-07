@@ -22,11 +22,12 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/syslist"
 	"go/build/constraint"
 	"strings"
 	"unicode"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/syslist"
 )
 
 var (

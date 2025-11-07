@@ -6,12 +6,13 @@ package auth
 
 import (
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/quoted"
 	"maps"
 	"net/http"
 	"net/url"
 	"os/exec"
 	"strings"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/quoted"
 )
 
 // runAuthCommand executes a user provided GOAUTH command, parses its output, and

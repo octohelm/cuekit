@@ -6,6 +6,7 @@ import (
 
 	"cuelang.org/go/cue/build"
 	"cuelang.org/go/cue/load"
+
 	"github.com/octohelm/cuekit/pkg/mod/module"
 )
 

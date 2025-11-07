@@ -11,10 +11,12 @@ import (
 
 	"cuelang.org/go/cue"
 	cueformat "cuelang.org/go/cue/format"
+	"golang.org/x/sync/errgroup"
+
+	contextx "github.com/octohelm/x/context"
+
 	"github.com/octohelm/cuekit/pkg/cueflow/graph"
 	"github.com/octohelm/cuekit/pkg/cuepath"
-	contextx "github.com/octohelm/x/context"
-	"golang.org/x/sync/errgroup"
 )
 
 var (

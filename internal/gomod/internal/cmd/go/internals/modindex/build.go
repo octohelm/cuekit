@@ -11,9 +11,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/fsys"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/syslist"
 	"go/ast"
 	"go/build"
 	"go/build/constraint"
@@ -26,6 +23,10 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/fsys"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/syslist"
 )
 
 // A Context specifies the supporting context for a build.

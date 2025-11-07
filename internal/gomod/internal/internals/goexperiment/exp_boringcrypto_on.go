@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const BoringCrypto = true
-const BoringCryptoInt = 1
+const (
+	BoringCrypto    = true
+	BoringCryptoInt = 1
+)

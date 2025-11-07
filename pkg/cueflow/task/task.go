@@ -1,8 +1,9 @@
 package task
 
 import (
-	"github.com/octohelm/cuekit/pkg/cueflow"
 	"github.com/octohelm/x/ptr"
+
+	"github.com/octohelm/cuekit/pkg/cueflow"
 )
 
 type Task struct {

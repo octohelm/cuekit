@@ -12,9 +12,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cacheprog"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/quoted"
 	"io"
 	"log"
 	"os"
@@ -22,6 +19,10 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cacheprog"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/quoted"
 )
 
 // ProgCache implements Cache via JSON messages over stdin/stdout to a child

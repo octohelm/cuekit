@@ -6,7 +6,9 @@
 // mechanism.
 package singleflight
 
-import "sync"
+import (
+	"sync"
+)
 
 // call is an in-flight or completed singleflight.Do call
 type call struct {

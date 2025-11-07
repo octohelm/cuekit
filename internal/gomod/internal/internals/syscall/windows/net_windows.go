@@ -6,6 +6,9 @@ package windows
 
 import (
 	"syscall"
+)
+
+import (
 	_ "unsafe"
 )
 

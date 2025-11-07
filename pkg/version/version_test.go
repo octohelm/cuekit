@@ -4,8 +4,9 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/octohelm/x/testing"
 	"golang.org/x/mod/module"
+
+	. "github.com/octohelm/x/testing"
 )
 
 func TestConvert(t *testing.T) {

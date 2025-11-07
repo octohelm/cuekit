@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const SyncHashTrieMap = false
-const SyncHashTrieMapInt = 0
+const (
+	SyncHashTrieMap    = false
+	SyncHashTrieMapInt = 0
+)

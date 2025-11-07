@@ -1,6 +1,8 @@
 package task
 
-import "github.com/octohelm/cuekit/pkg/cueflow"
+import (
+	"github.com/octohelm/cuekit/pkg/cueflow"
+)
 
 type Group struct {
 	Task

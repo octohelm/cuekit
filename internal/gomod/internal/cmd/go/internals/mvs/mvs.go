@@ -12,9 +12,9 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/par"
-
 	"golang.org/x/mod/module"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/par"
 )
 
 // A Reqs is the requirement graph on which Minimal Version Selection (MVS) operates.
@@ -116,7 +116,6 @@ func buildList(targets []module.Version, reqs Reqs, upgrade func(module.Version)
 		work.Add(target)
 	}
 	work.Do(10, func(m module.Version) {
-
 		var required []module.Version
 		var err error
 		if m.Version != "none" {

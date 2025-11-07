@@ -4,101 +4,10 @@
 
 package modload
 
-// This file contains the module-mode package loader, as well as some accessory
-// functions pertaining to the package import graph.
-//
-// There are two exported entry points into package loading — LoadPackages and
-// ImportFromFiles — both implemented in terms of loadFromRoots, which itself
-// manipulates an instance of the loader struct.
-//
-// Although most of the loading state is maintained in the loader struct,
-// one key piece - the build list - is a global, so that it can be modified
-// separate from the loading operation, such as during "go get"
-// upgrades/downgrades or in "go mod" operations.
-// TODO(#40775): It might be nice to make the loader take and return
-// a buildList rather than hard-coding use of the global.
-//
-// Loading is an iterative process. On each iteration, we try to load the
-// requested packages and their transitive imports, then try to resolve modules
-// for any imported packages that are still missing.
-//
-// The first step of each iteration identifies a set of “root” packages.
-// Normally the root packages are exactly those matching the named pattern
-// arguments. However, for the "all" meta-pattern, the final set of packages is
-// computed from the package import graph, and therefore cannot be an initial
-// input to loading that graph. Instead, the root packages for the "all" pattern
-// are those contained in the main module, and allPatternIsRoot parameter to the
-// loader instructs it to dynamically expand those roots to the full "all"
-// pattern as loading progresses.
-//
-// The pkgInAll flag on each loadPkg instance tracks whether that
-// package is known to match the "all" meta-pattern.
-// A package matches the "all" pattern if:
-// 	- it is in the main module, or
-// 	- it is imported by any test in the main module, or
-// 	- it is imported by a tool of the main module, or
-// 	- it is imported by another package in "all", or
-// 	- the main module specifies a go version ≤ 1.15, and the package is imported
-// 	  by a *test of* another package in "all".
-//
-// When graph pruning is in effect, we want to spot-check the graph-pruning
-// invariants — which depend on which packages are known to be in "all" — even
-// when we are only loading individual packages, so we set the pkgInAll flag
-// regardless of the whether the "all" pattern is a root.
-// (This is necessary to maintain the “import invariant” described in
-// https://golang.org/design/36460-lazy-module-loading.)
-//
-// Because "go mod vendor" prunes out the tests of vendored packages, the
-// behavior of the "all" pattern with -mod=vendor in Go 1.11–1.15 is the same
-// as the "all" pattern (regardless of the -mod flag) in 1.16+.
-// The loader uses the GoVersion parameter to determine whether the "all"
-// pattern should close over tests (as in Go 1.11–1.15) or stop at only those
-// packages transitively imported by the packages and tests in the main module
-// ("all" in Go 1.16+ and "go mod vendor" in Go 1.11+).
-//
-// Note that it is possible for a loaded package NOT to be in "all" even when we
-// are loading the "all" pattern. For example, packages that are transitive
-// dependencies of other roots named on the command line must be loaded, but are
-// not in "all". (The mod_notall test illustrates this behavior.)
-// Similarly, if the LoadTests flag is set but the "all" pattern does not close
-// over test dependencies, then when we load the test of a package that is in
-// "all" but outside the main module, the dependencies of that test will not
-// necessarily themselves be in "all". (That configuration does not arise in Go
-// 1.11–1.15, but it will be possible in Go 1.16+.)
-//
-// Loading proceeds from the roots, using a parallel work-queue with a limit on
-// the amount of active work (to avoid saturating disks, CPU cores, and/or
-// network connections). Each package is added to the queue the first time it is
-// imported by another package. When we have finished identifying the imports of
-// a package, we add the test for that package if it is needed. A test may be
-// needed if:
-// 	- the package matches a root pattern and tests of the roots were requested, or
-// 	- the package is in the main module and the "all" pattern is requested
-// 	  (because the "all" pattern includes the dependencies of tests in the main
-// 	  module), or
-// 	- the package is in "all" and the definition of "all" we are using includes
-// 	  dependencies of tests (as is the case in Go ≤1.15).
-//
-// After all available packages have been loaded, we examine the results to
-// identify any requested or imported packages that are still missing, and if
-// so, which modules we could add to the module graph in order to make the
-// missing packages available. We add those to the module graph and iterate,
-// until either all packages resolve successfully or we cannot identify any
-// module that would resolve any remaining missing package.
-//
-// If the main module is “tidy” (that is, if "go mod tidy" is a no-op for it)
-// and all requested packages are in "all", then loading completes in a single
-// iteration.
-// TODO(bcmills): We should also be able to load in a single iteration if the
-// requested packages all come from modules that are themselves tidy, regardless
-// of whether those packages are in "all". Today, that requires two iterations
-// if those packages are not found in existing dependencies of the main module.
-
 import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/diff"
 	"go/build"
 	"io/fs"
 	"maps"
@@ -112,6 +21,8 @@ import (
 	"sync"
 	"sync/atomic"
 
+	"golang.org/x/mod/module"
+
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/fips140"
@@ -119,13 +30,102 @@ import (
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/gover"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/imports"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch"
+
+	// This file contains the module-mode package loader, as well as some accessory
+	// functions pertaining to the package import graph.
+	//
+	// There are two exported entry points into package loading — LoadPackages and
+	// ImportFromFiles — both implemented in terms of loadFromRoots, which itself
+	// manipulates an instance of the loader struct.
+	//
+	// Although most of the loading state is maintained in the loader struct,
+	// one key piece - the build list - is a global, so that it can be modified
+	// separate from the loading operation, such as during "go get"
+	// upgrades/downgrades or in "go mod" operations.
+	// TODO(#40775): It might be nice to make the loader take and return
+	// a buildList rather than hard-coding use of the global.
+	//
+	// Loading is an iterative process. On each iteration, we try to load the
+	// requested packages and their transitive imports, then try to resolve modules
+	// for any imported packages that are still missing.
+	//
+	// The first step of each iteration identifies a set of “root” packages.
+	// Normally the root packages are exactly those matching the named pattern
+	// arguments. However, for the "all" meta-pattern, the final set of packages is
+	// computed from the package import graph, and therefore cannot be an initial
+	// input to loading that graph. Instead, the root packages for the "all" pattern
+	// are those contained in the main module, and allPatternIsRoot parameter to the
+	// loader instructs it to dynamically expand those roots to the full "all"
+	// pattern as loading progresses.
+	//
+	// The pkgInAll flag on each loadPkg instance tracks whether that
+	// package is known to match the "all" meta-pattern.
+	// A package matches the "all" pattern if:
+	// 	- it is in the main module, or
+	// 	- it is imported by any test in the main module, or
+	// 	- it is imported by a tool of the main module, or
+	// 	- it is imported by another package in "all", or
+	// 	- the main module specifies a go version ≤ 1.15, and the package is imported
+	// 	  by a *test of* another package in "all".
+	//
+	// When graph pruning is in effect, we want to spot-check the graph-pruning
+	// invariants — which depend on which packages are known to be in "all" — even
+	// when we are only loading individual packages, so we set the pkgInAll flag
+	// regardless of the whether the "all" pattern is a root.
+	// (This is necessary to maintain the “import invariant” described in
+	// https://golang.org/design/36460-lazy-module-loading.)
+	//
+	// Because "go mod vendor" prunes out the tests of vendored packages, the
+	// behavior of the "all" pattern with -mod=vendor in Go 1.11–1.15 is the same
+	// as the "all" pattern (regardless of the -mod flag) in 1.16+.
+	// The loader uses the GoVersion parameter to determine whether the "all"
+	// pattern should close over tests (as in Go 1.11–1.15) or stop at only those
+	// packages transitively imported by the packages and tests in the main module
+	// ("all" in Go 1.16+ and "go mod vendor" in Go 1.11+).
+	//
+	// Note that it is possible for a loaded package NOT to be in "all" even when we
+	// are loading the "all" pattern. For example, packages that are transitive
+	// dependencies of other roots named on the command line must be loaded, but are
+	// not in "all". (The mod_notall test illustrates this behavior.)
+	// Similarly, if the LoadTests flag is set but the "all" pattern does not close
+	// over test dependencies, then when we load the test of a package that is in
+	// "all" but outside the main module, the dependencies of that test will not
+	// necessarily themselves be in "all". (That configuration does not arise in Go
+	// 1.11–1.15, but it will be possible in Go 1.16+.)
+	//
+	// Loading proceeds from the roots, using a parallel work-queue with a limit on
+	// the amount of active work (to avoid saturating disks, CPU cores, and/or
+	// network connections). Each package is added to the queue the first time it is
+	// imported by another package. When we have finished identifying the imports of
+	// a package, we add the test for that package if it is needed. A test may be
+	// needed if:
+	// 	- the package matches a root pattern and tests of the roots were requested, or
+	// 	- the package is in the main module and the "all" pattern is requested
+	// 	  (because the "all" pattern includes the dependencies of tests in the main
+	// 	  module), or
+	// 	- the package is in "all" and the definition of "all" we are using includes
+	// 	  dependencies of tests (as is the case in Go ≤1.15).
+	//
+	// After all available packages have been loaded, we examine the results to
+	// identify any requested or imported packages that are still missing, and if
+	// so, which modules we could add to the module graph in order to make the
+	// missing packages available. We add those to the module graph and iterate,
+	// until either all packages resolve successfully or we cannot identify any
+	// module that would resolve any remaining missing package.
+	//
+	// If the main module is “tidy” (that is, if "go mod tidy" is a no-op for it)
+	// and all requested packages are in "all", then loading completes in a single
+	// iteration.
+	// TODO(bcmills): We should also be able to load in a single iteration if the
+	// requested packages all come from modules that are themselves tidy, regardless
+	// of whether those packages are in "all". Today, that requires two iterations
+	// if those packages are not found in existing dependencies of the main module.
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modindex"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/mvs"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/search"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/par"
-
-	"golang.org/x/mod/module"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/diff"
 )
 
 // loaded is the most recently-used package loader.

@@ -9,8 +9,10 @@ import (
 
 	"cuelang.org/go/cue"
 	cueformat "cuelang.org/go/cue/format"
-	"github.com/octohelm/cuekit/pkg/cuepath"
+
 	"github.com/octohelm/x/anyjson"
+
+	"github.com/octohelm/cuekit/pkg/cuepath"
 )
 
 type CueWriterOption func(cw *cueWriter)

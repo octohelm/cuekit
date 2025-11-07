@@ -12,14 +12,15 @@ package auth
 import (
 	"bytes"
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/web/intercept"
 	"log"
 	"net/http"
 	"net/url"
 	"os/exec"
 	"strings"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/web/intercept"
 )
 
 const maxTries = 3

@@ -5,9 +5,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/octohelm/cuekit/pkg/cueutil"
 	"github.com/octohelm/x/testing/bdd"
 	"github.com/octohelm/x/testing/snapshot"
+
+	"github.com/octohelm/cuekit/pkg/cueutil"
 )
 
 func FuzzResolver(f *testing.F) {

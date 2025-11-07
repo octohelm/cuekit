@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const NewInliner = false
-const NewInlinerInt = 0
+const (
+	NewInliner    = false
+	NewInlinerInt = 0
+)

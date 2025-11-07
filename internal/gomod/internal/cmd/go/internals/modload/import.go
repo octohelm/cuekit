@@ -16,6 +16,8 @@ import (
 	"sort"
 	"strings"
 
+	"golang.org/x/mod/module"
+
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/fsys"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/gover"
@@ -24,8 +26,6 @@ import (
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/search"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/par"
-
-	"golang.org/x/mod/module"
 )
 
 type ImportMissingError struct {

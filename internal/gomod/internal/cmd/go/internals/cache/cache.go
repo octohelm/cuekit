@@ -11,7 +11,6 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/godebug"
 	"io"
 	"io/fs"
 	"os"
@@ -23,6 +22,7 @@ import (
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/lockedfile"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/mmap"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/godebug"
 )
 
 // An ActionID is a cache action key, the hash of a complete description of a

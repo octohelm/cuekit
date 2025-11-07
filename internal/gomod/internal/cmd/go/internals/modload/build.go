@@ -14,6 +14,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"golang.org/x/mod/module"
+
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/gover"
@@ -22,8 +24,6 @@ import (
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modindex"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modinfo"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/search"
-
-	"golang.org/x/mod/module"
 )
 
 var (

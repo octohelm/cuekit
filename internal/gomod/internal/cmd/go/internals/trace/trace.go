@@ -8,11 +8,12 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/trace/traceviewer/format"
 	"os"
 	"strings"
 	"sync/atomic"
 	"time"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/trace/traceviewer/format"
 )
 
 // Constants used in event fields.

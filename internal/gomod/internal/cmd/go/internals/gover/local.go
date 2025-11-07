@@ -5,9 +5,10 @@
 package gover
 
 import (
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/goversion"
 	"runtime"
 	"strconv"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/goversion"
 )
 
 // TestVersion is initialized in the go command test binary

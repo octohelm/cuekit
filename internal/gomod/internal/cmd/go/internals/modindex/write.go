@@ -6,9 +6,10 @@ package modindex
 
 import (
 	"encoding/binary"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
 	"go/token"
 	"sort"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
 )
 
 const indexVersion = "go index v2" // 11 bytes (plus \n), to align uint32s in index

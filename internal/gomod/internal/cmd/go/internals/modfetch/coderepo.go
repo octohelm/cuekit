@@ -19,13 +19,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/gover"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch/codehost"
-
 	"golang.org/x/mod/modfile"
 	"golang.org/x/mod/module"
 	"golang.org/x/mod/semver"
 	modzip "golang.org/x/mod/zip"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/gover"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch/codehost"
 )
 
 // A codeRepo implements modfetch.Repo using an underlying codehost.Repo.

@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/gover"
-
 	"golang.org/x/mod/module"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/gover"
 )
 
 // Graph implements an incremental version of the MVS algorithm, with the

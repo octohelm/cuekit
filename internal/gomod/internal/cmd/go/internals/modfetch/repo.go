@@ -13,13 +13,13 @@ import (
 	"strconv"
 	"time"
 
+	"golang.org/x/mod/module"
+
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch/codehost"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/vcs"
 	web "github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/web"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/par"
-
-	"golang.org/x/mod/module"
 )
 
 const traceRepo = false // trace all repo actions, for debugging

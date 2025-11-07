@@ -1,6 +1,8 @@
 package runner
 
-import "cuelang.org/go/cue"
+import (
+	"cuelang.org/go/cue"
+)
 
 var (
 	PathControl = cue.ParsePath("$$control.name")

@@ -5,8 +5,10 @@ import (
 
 	cuemodfile "cuelang.org/go/mod/modfile"
 	"cuelang.org/go/mod/module"
-	"github.com/octohelm/cuekit/pkg/mod/modfile"
+
 	"github.com/octohelm/unifs/pkg/filesystem"
+
+	"github.com/octohelm/cuekit/pkg/mod/modfile"
 )
 
 func NewModule(path string, version string, commitSource func(ctx context.Context, fsys filesystem.FileSystem) error) (*Module, error) {

@@ -10,6 +10,7 @@ import (
 
 	cuemodfile "cuelang.org/go/mod/modfile"
 	"cuelang.org/go/mod/module"
+
 	"github.com/octohelm/cuekit/pkg/mod/modfile"
 )
 

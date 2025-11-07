@@ -10,15 +10,17 @@ import (
 
 	"cuelang.org/go/cue"
 	cueformat "cuelang.org/go/cue/format"
+
+	"github.com/octohelm/x/logr"
+	"github.com/octohelm/x/logr/slog"
+	"github.com/octohelm/x/testing/bdd"
+	"github.com/octohelm/x/testing/snapshot"
+
 	"github.com/octohelm/cuekit/pkg/cueflow"
 	"github.com/octohelm/cuekit/pkg/cueflow/graph"
 	"github.com/octohelm/cuekit/pkg/cueflow/runner"
 	"github.com/octohelm/cuekit/pkg/cueflow/testdata/example"
 	"github.com/octohelm/cuekit/pkg/cueutil"
-	"github.com/octohelm/x/logr"
-	"github.com/octohelm/x/logr/slog"
-	"github.com/octohelm/x/testing/bdd"
-	"github.com/octohelm/x/testing/snapshot"
 )
 
 var decls []byte

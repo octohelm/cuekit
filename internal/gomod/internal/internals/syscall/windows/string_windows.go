@@ -4,7 +4,9 @@
 
 package windows
 
-import "syscall"
+import (
+	"syscall"
+)
 
 // NTUnicodeString is a UTF-16 string for NT native APIs, corresponding to UNICODE_STRING.
 type NTUnicodeString struct {

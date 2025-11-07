@@ -8,8 +8,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
 	"strings"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
 )
 
 // FromToolchain returns the Go version for the named toolchain,

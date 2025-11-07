@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const RegabiArgs = false
-const RegabiArgsInt = 0
+const (
+	RegabiArgs    = false
+	RegabiArgsInt = 0
+)

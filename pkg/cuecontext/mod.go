@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"cuelang.org/go/mod/modload"
+
 	"github.com/octohelm/cuekit/pkg/mod/modfile"
 	"github.com/octohelm/cuekit/pkg/mod/module"
 )

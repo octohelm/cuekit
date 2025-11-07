@@ -1,6 +1,8 @@
 package module
 
-import "cuelang.org/go/mod/module"
+import (
+	"cuelang.org/go/mod/module"
+)
 
 type Version = module.Version
 

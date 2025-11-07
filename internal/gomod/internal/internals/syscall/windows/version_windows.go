@@ -75,7 +75,7 @@ var initTCPKeepAlive = sync.OnceFunc(func() {
 		return
 	}
 	defer syscall.Closesocket(s)
-	var optSupported = func(opt int) bool {
+	optSupported := func(opt int) bool {
 		err := syscall.SetsockoptInt(s, syscall.IPPROTO_TCP, opt, 1)
 		return !errors.Is(err, syscall.WSAENOPROTOOPT)
 	}

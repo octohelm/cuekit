@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const Arenas = true
-const ArenasInt = 1
+const (
+	Arenas    = true
+	ArenasInt = 1
+)

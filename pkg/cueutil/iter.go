@@ -4,9 +4,9 @@ import (
 	"iter"
 	"strings"
 
-	"github.com/octohelm/cuekit/pkg/cuepath"
-
 	"cuelang.org/go/cue"
+
+	"github.com/octohelm/cuekit/pkg/cuepath"
 )
 
 func Items(v cue.Value) iter.Seq2[cue.Value, error] {

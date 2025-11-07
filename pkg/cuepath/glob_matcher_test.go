@@ -3,10 +3,10 @@ package cuepath
 import (
 	"testing"
 
-	"github.com/octohelm/x/testing/bdd"
-
 	"cuelang.org/go/cue"
+
 	testingx "github.com/octohelm/x/testing"
+	"github.com/octohelm/x/testing/bdd"
 )
 
 func TestPathMatcher(t *testing.T) {

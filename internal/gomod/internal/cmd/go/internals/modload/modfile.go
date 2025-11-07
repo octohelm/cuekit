@@ -14,6 +14,9 @@ import (
 	"sync"
 	"unicode"
 
+	"golang.org/x/mod/modfile"
+	"golang.org/x/mod/module"
+
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/fsys"
@@ -22,9 +25,6 @@ import (
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/trace"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/par"
-
-	"golang.org/x/mod/modfile"
-	"golang.org/x/mod/module"
 )
 
 // ReadModFile reads and parses the mod file at gomod. ReadModFile properly applies the

@@ -6,8 +6,9 @@ package robustio
 
 import (
 	"errors"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/syscall/windows"
 	"syscall"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/syscall/windows"
 )
 
 const errFileNotFound = syscall.ERROR_FILE_NOT_FOUND

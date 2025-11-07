@@ -17,13 +17,13 @@ import (
 	"sync"
 	"sync/atomic"
 
+	"golang.org/x/mod/module"
+
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/gover"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/mvs"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/par"
-
-	"golang.org/x/mod/module"
 )
 
 // A Requirements represents a logically-immutable set of root module requirements.

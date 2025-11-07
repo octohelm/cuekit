@@ -6,8 +6,9 @@ package modinfo
 
 import (
 	"encoding/json"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch/codehost"
 	"time"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch/codehost"
 )
 
 // Note that these structs are publicly visible (part of go list's API)

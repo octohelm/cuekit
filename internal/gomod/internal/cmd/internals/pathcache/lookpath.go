@@ -5,8 +5,9 @@
 package pathcache
 
 import (
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/par"
 	"os/exec"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/par"
 )
 
 var lookPathCache par.ErrCache[string, string]

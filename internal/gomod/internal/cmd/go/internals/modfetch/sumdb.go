@@ -21,14 +21,14 @@ import (
 	"sync"
 	"time"
 
+	"golang.org/x/mod/module"
+	"golang.org/x/mod/sumdb"
+	"golang.org/x/mod/sumdb/note"
+
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/lockedfile"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/web"
-
-	"golang.org/x/mod/module"
-	"golang.org/x/mod/sumdb"
-	"golang.org/x/mod/sumdb/note"
 )
 
 // useSumDB reports whether to use the Go checksum database for the given module.

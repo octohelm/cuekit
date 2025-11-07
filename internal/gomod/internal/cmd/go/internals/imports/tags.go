@@ -5,8 +5,9 @@
 package imports
 
 import (
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	"sync"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 )
 
 // Tags returns a set of build tags that are true for the target platform.

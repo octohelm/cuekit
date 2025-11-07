@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const HeapMinimum512KiB = false
-const HeapMinimum512KiBInt = 0
+const (
+	HeapMinimum512KiB    = false
+	HeapMinimum512KiBInt = 0
+)

@@ -14,8 +14,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/godebug"
 	"io"
 	"io/fs"
 	"iter"
@@ -29,6 +27,9 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/godebug"
 )
 
 // Trace emits a trace event for the operation and file path to the trace log,

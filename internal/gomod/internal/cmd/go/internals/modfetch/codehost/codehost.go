@@ -20,12 +20,12 @@ import (
 	"sync"
 	"time"
 
+	"golang.org/x/mod/module"
+	"golang.org/x/mod/semver"
+
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/lockedfile"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
-
-	"golang.org/x/mod/module"
-	"golang.org/x/mod/semver"
 )
 
 // Downloaded size limits.
@@ -171,6 +171,7 @@ type UnknownRevisionError struct {
 func (e *UnknownRevisionError) Error() string {
 	return "unknown revision " + e.Rev
 }
+
 func (UnknownRevisionError) Is(err error) bool {
 	return err == fs.ErrNotExist
 }
@@ -184,6 +185,7 @@ type noCommitsError struct{}
 func (noCommitsError) Error() string {
 	return "no commits"
 }
+
 func (noCommitsError) Is(err error) bool {
 	return err == fs.ErrNotExist
 }

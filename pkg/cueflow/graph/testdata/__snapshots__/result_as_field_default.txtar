@@ -3,6 +3,7 @@ direction: right
 
 "/actions/_def\nDef"
 "/actions/action/manifests/_build/_bin/_fetch\nFetch"
+"/actions/_def\nDef" -> "/actions/action/manifests/_build/_bin/_fetch\nFetch"
 "/actions/action/manifests/_build/_bin/_sys_info\nSysInfo" -> "/actions/action/manifests/_build/_bin/_fetch\nFetch"
 "/actions/action/manifests/_build/_bin/_sys_info\nSysInfo"
 "/actions/_def\nDef" -> "/actions/action/manifests/_build/_bin/_sys_info\nSysInfo"

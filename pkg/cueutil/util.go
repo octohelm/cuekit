@@ -1,6 +1,8 @@
 package cueutil
 
-import "iter"
+import (
+	"iter"
+)
 
 func Act[V any](do func(yield func(V) bool) error) iter.Seq2[V, error] {
 	return func(yield func(V, error) bool) {

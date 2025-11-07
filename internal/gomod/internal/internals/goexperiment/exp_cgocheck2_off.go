@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const CgoCheck2 = false
-const CgoCheck2Int = 0
+const (
+	CgoCheck2    = false
+	CgoCheck2Int = 0
+)

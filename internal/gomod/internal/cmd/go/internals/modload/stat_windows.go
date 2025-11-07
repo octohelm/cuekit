@@ -6,7 +6,9 @@
 
 package modload
 
-import "io/fs"
+import (
+	"io/fs"
+)
 
 // hasWritePerm reports whether the current user has permission to write to the
 // file with the given info.

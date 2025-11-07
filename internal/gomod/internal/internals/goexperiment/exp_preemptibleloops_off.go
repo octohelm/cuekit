@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const PreemptibleLoops = false
-const PreemptibleLoopsInt = 0
+const (
+	PreemptibleLoops    = false
+	PreemptibleLoopsInt = 0
+)

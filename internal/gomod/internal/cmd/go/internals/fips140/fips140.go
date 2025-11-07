@@ -86,11 +86,6 @@ package fips140
 
 import (
 	"context"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/fsys"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
 	"os"
 	"path"
 	"path/filepath"
@@ -98,6 +93,12 @@ import (
 
 	"golang.org/x/mod/module"
 	"golang.org/x/mod/semver"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/fsys"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
 )
 
 // Init initializes the FIPS settings.

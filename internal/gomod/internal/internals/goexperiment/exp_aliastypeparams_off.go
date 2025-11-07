@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const AliasTypeParams = false
-const AliasTypeParamsInt = 0
+const (
+	AliasTypeParams    = false
+	AliasTypeParamsInt = 0
+)

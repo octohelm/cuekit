@@ -6,9 +6,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/octohelm/cuekit/pkg/mod/modmem"
 	"github.com/octohelm/unifs/pkg/filesystem"
 	testingx "github.com/octohelm/x/testing"
+
+	"github.com/octohelm/cuekit/pkg/mod/modmem"
 )
 
 func Test(t *testing.T) {

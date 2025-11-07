@@ -3,7 +3,7 @@ package modload
 import (
 	"context"
 	"sync"
-	
+
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modinfo"
 )
 

@@ -4,7 +4,9 @@
 
 package par
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // Queue manages a set of work items to be executed in parallel. The number of
 // active work items is limited, and excess items are queued sequentially.

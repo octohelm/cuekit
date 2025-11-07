@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const LoopVar = true
-const LoopVarInt = 1
+const (
+	LoopVar    = true
+	LoopVarInt = 1
+)

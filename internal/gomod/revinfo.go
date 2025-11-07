@@ -4,15 +4,18 @@ import (
 	"context"
 	"fmt"
 	"strings"
-	_ "unsafe"
 
-	"github.com/octohelm/cuekit/pkg/version"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/mod/module"
 
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch/codehost"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/vcs"
+	"github.com/octohelm/cuekit/pkg/version"
+)
+
+import (
+	_ "unsafe"
 )
 
 //go:linkname newCodeRepo github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch.newCodeRepo

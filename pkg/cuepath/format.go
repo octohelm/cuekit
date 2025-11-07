@@ -2,7 +2,6 @@ package cuepath
 
 import (
 	"cuelang.org/go/cue"
-
 	"github.com/go-json-experiment/json/jsontext"
 )
 

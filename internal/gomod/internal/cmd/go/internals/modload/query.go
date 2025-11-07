@@ -18,6 +18,9 @@ import (
 	"sync"
 	"time"
 
+	"golang.org/x/mod/module"
+	"golang.org/x/mod/semver"
+
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/gover"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/imports"
@@ -28,9 +31,6 @@ import (
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/trace"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/pkgpattern"
-
-	"golang.org/x/mod/module"
-	"golang.org/x/mod/semver"
 )
 
 // Query looks up a revision of a given module given a version query string.
@@ -1148,9 +1148,11 @@ func (er emptyRepo) ModulePath() string { return er.path }
 func (er emptyRepo) CheckReuse(ctx context.Context, old *codehost.Origin) error {
 	return fmt.Errorf("empty repo")
 }
+
 func (er emptyRepo) Versions(ctx context.Context, prefix string) (*modfetch.Versions, error) {
 	return &modfetch.Versions{}, nil
 }
+
 func (er emptyRepo) Stat(ctx context.Context, rev string) (*modfetch.RevInfo, error) {
 	return nil, er.err
 }

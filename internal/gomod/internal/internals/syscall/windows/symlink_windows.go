@@ -4,7 +4,9 @@
 
 package windows
 
-import "syscall"
+import (
+	"syscall"
+)
 
 const (
 	ERROR_INVALID_PARAMETER syscall.Errno = 87

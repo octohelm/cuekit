@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const JSONv2 = false
-const JSONv2Int = 0
+const (
+	JSONv2    = false
+	JSONv2Int = 0
+)

@@ -9,8 +9,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/godebugs"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/lazyregexp"
 	"io"
 	"maps"
 	"os"
@@ -21,6 +19,9 @@ import (
 	"strings"
 	"sync"
 
+	"golang.org/x/mod/modfile"
+	"golang.org/x/mod/module"
+
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/fips140"
@@ -29,9 +30,8 @@ import (
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/lockedfile"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/search"
-
-	"golang.org/x/mod/modfile"
-	"golang.org/x/mod/module"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/godebugs"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/lazyregexp"
 )
 
 // Variables set by other packages.
@@ -1780,9 +1780,7 @@ Run 'go help mod init' for more information.
 	return "", fmt.Errorf(msg, dir, reason)
 }
 
-var (
-	importCommentRE = lazyregexp.New(`(?m)^package[ \t]+[^ \t\r\n/]+[ \t]+//[ \t]+import[ \t]+(\"[^"]+\")[ \t]*\r?\n`)
-)
+var importCommentRE = lazyregexp.New(`(?m)^package[ \t]+[^ \t\r\n/]+[ \t]+//[ \t]+import[ \t]+(\"[^"]+\")[ \t]*\r?\n`)
 
 func findImportComment(file string) string {
 	data, err := os.ReadFile(file)

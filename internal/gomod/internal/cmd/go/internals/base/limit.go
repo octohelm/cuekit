@@ -6,10 +6,11 @@ package base
 
 import (
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/godebug"
 	"runtime"
 	"strconv"
 	"sync"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/godebug"
 )
 
 var NetLimitGodebug = godebug.New("#cmdgonetlimit")

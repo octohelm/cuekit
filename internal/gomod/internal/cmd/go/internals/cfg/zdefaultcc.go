@@ -13,6 +13,7 @@ func DefaultCC(goos, goarch string) string {
 	}
 	return "gcc"
 }
+
 func DefaultCXX(goos, goarch string) string {
 	switch goos + `/` + goarch {
 	}

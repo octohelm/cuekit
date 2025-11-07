@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const Dwarf5 = true
-const Dwarf5Int = 1
+const (
+	Dwarf5    = true
+	Dwarf5Int = 1
+)

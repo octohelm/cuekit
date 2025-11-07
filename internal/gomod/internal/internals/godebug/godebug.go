@@ -44,18 +44,27 @@
 // documentation for details.
 package godebug
 
+import (
+	"sync"
+	"sync/atomic"
+	"unsafe"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/bisect"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/godebugs"
+)
+
+import (
+	_ "unsafe"
+)
+
 // Note: Be careful about new imports here. Any package
 // that internal/godebug imports cannot itself import internal/godebug,
 // meaning it cannot introduce a GODEBUG setting of its own.
 // We keep imports to the absolute bare minimum.
 import (
-	"sync"
-	"sync/atomic"
-	"unsafe"
-	_ "unsafe" // go:linkname
 
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/bisect"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/godebugs"
+// go:linkname
+
 )
 
 // A Setting is a single setting in the $GODEBUG environment variable.
@@ -128,7 +137,7 @@ func (s *Setting) register() {
 	if s.info == nil || s.info.Opaque {
 		panic("godebug: unexpected IncNonDefault of " + s.name)
 	}
-	//registerMetric("/godebug/non-default-behavior/"+s.Name()+":events", s.nonDefault.Load)
+	// registerMetric("/godebug/non-default-behavior/"+s.Name()+":events", s.nonDefault.Load)
 }
 
 // cache is a cache of all the GODEBUG settings,
@@ -216,8 +225,8 @@ func registerMetric(name string, read func() uint64)
 func setNewIncNonDefault(newIncNonDefault func(string) func())
 
 func init() {
-	//setUpdate(update)
-	//setNewIncNonDefault(newIncNonDefault)
+	// setUpdate(update)
+	// setNewIncNonDefault(newIncNonDefault)
 }
 
 func newIncNonDefault(name string) func() {

@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"cuelang.org/go/mod/modconfig"
+
 	"github.com/octohelm/cuekit/pkg/mod/modfile"
 	"github.com/octohelm/cuekit/pkg/mod/modmem"
 	"github.com/octohelm/cuekit/pkg/mod/module"

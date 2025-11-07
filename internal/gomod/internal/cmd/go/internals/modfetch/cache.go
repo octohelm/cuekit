@@ -19,6 +19,9 @@ import (
 	"strings"
 	"sync"
 
+	"golang.org/x/mod/module"
+	"golang.org/x/mod/semver"
+
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/gover"
@@ -27,9 +30,6 @@ import (
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/par"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/robustio"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/telemetry/counter"
-
-	"golang.org/x/mod/module"
-	"golang.org/x/mod/semver"
 )
 
 func cacheDir(ctx context.Context, path string) (string, error) {
@@ -226,7 +226,6 @@ func (r *cachingRepo) Versions(ctx context.Context, prefix string) (*Versions, e
 	v, err := r.versionsCache.Do(prefix, func() (*Versions, error) {
 		return r.repo(ctx).Versions(ctx, prefix)
 	})
-
 	if err != nil {
 		return nil, err
 	}

@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const SwissMap = false
-const SwissMapInt = 0
+const (
+	SwissMap    = false
+	SwissMapInt = 0
+)

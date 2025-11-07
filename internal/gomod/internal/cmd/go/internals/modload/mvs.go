@@ -10,11 +10,11 @@ import (
 	"os"
 	"sort"
 
+	"golang.org/x/mod/module"
+
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/gover"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch/codehost"
-
-	"golang.org/x/mod/module"
 )
 
 // cmpVersion implements the comparison for versions in the module loader.

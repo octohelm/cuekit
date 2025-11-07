@@ -4,7 +4,9 @@
 
 package modload
 
-import "github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
+import (
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
+)
 
 var HelpModules = &base.Command{
 	UsageLine: "modules",

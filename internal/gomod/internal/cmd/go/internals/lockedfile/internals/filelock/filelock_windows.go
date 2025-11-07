@@ -7,9 +7,10 @@
 package filelock
 
 import (
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/syscall/windows"
 	"io/fs"
 	"syscall"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/syscall/windows"
 )
 
 type lockType uint32

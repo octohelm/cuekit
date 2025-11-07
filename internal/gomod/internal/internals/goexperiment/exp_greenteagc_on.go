@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const GreenTeaGC = true
-const GreenTeaGCInt = 1
+const (
+	GreenTeaGC    = true
+	GreenTeaGCInt = 1
+)

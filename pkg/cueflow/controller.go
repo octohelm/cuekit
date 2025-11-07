@@ -8,11 +8,11 @@ import (
 	"maps"
 
 	"cuelang.org/go/cue"
-
 	"github.com/go-json-experiment/json/jsontext"
+	"golang.org/x/sync/errgroup"
+
 	"github.com/octohelm/cuekit/pkg/cueflow/graph"
 	"github.com/octohelm/cuekit/pkg/cuepath"
-	"golang.org/x/sync/errgroup"
 )
 
 func RunSubTasks(ctx context.Context, scope Scope, isPrefix func(p cue.Path) (bool, cue.Path)) error {

@@ -8,9 +8,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/godebug"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/lazyregexp"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/singleflight"
 	"io/fs"
 	"log"
 	urlpkg "net/url"
@@ -23,14 +20,17 @@ import (
 	"sync"
 	"time"
 
+	"golang.org/x/mod/module"
+
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/search"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/web"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/pathcache"
-
-	"golang.org/x/mod/module"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/godebug"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/lazyregexp"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/singleflight"
 )
 
 // A Cmd describes how to use a version control system

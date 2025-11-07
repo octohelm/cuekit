@@ -3,9 +3,10 @@
 package windows
 
 import (
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/syscall/windows/sysdll"
 	"syscall"
 	"unsafe"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/syscall/windows/sysdll"
 )
 
 var _ unsafe.Pointer

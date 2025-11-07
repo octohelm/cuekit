@@ -5,8 +5,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	testingx "github.com/octohelm/x/testing"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 )
 
 func TestDownload(t *testing.T) {

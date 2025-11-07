@@ -9,8 +9,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/godebug"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/goroot"
 	"go/build"
 	"go/build/constraint"
 	"go/token"
@@ -31,6 +29,8 @@ import (
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/imports"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/par"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/godebug"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/goroot"
 )
 
 // enabled is used to flag off the behavior of the module index on tip, for debugging.
@@ -500,7 +500,7 @@ func (rp *IndexPackage) Import(bctxt build.Context, mode build.ImportMode) (p *b
 			}
 		}
 
-		var shouldBuild = true
+		shouldBuild := true
 		if !ctxt.goodOSArchFile(name, allTags) && !ctxt.UseAllFiles {
 			shouldBuild = false
 		} else if goBuildConstraint := tf.goBuildConstraint(); goBuildConstraint != "" {
@@ -877,27 +877,35 @@ const (
 func (sf *sourceFile) error() string {
 	return sf.d.stringAt(sf.pos + sourceFileError)
 }
+
 func (sf *sourceFile) parseError() string {
 	return sf.d.stringAt(sf.pos + sourceFileParseError)
 }
+
 func (sf *sourceFile) synopsis() string {
 	return sf.d.stringAt(sf.pos + sourceFileSynopsis)
 }
+
 func (sf *sourceFile) name() string {
 	return sf.d.stringAt(sf.pos + sourceFileName)
 }
+
 func (sf *sourceFile) pkgName() string {
 	return sf.d.stringAt(sf.pos + sourceFilePkgName)
 }
+
 func (sf *sourceFile) ignoreFile() bool {
 	return sf.d.boolAt(sf.pos + sourceFileIgnoreFile)
 }
+
 func (sf *sourceFile) binaryOnly() bool {
 	return sf.d.boolAt(sf.pos + sourceFileBinaryOnly)
 }
+
 func (sf *sourceFile) cgoDirectives() string {
 	return sf.d.stringAt(sf.pos + sourceFileCgoDirectives)
 }
+
 func (sf *sourceFile) goBuildConstraint() string {
 	return sf.d.stringAt(sf.pos + sourceFileGoBuildConstraint)
 }

@@ -10,9 +10,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/buildcfg"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/cfg"
-	"github.com/octohelm/cuekit/internal/gomod/internal/internals/platform"
 	"go/build"
 	"io"
 	"io/fs"
@@ -25,6 +22,9 @@ import (
 
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/fsys"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/pathcache"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/buildcfg"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/cfg"
+	"github.com/octohelm/cuekit/internal/gomod/internal/internals/platform"
 )
 
 // Global build parameters (used during package load)

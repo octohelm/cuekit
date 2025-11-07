@@ -1,6 +1,8 @@
 package cueconvert
 
-import "reflect"
+import (
+	"reflect"
+)
 
 type OutputValuer interface {
 	OutputValues() map[string]any

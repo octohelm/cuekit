@@ -7,8 +7,6 @@ package auth
 
 import (
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +14,9 @@ import (
 	"slices"
 	"strings"
 	"sync"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 )
 
 var (

@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const FieldTrack = false
-const FieldTrackInt = 0
+const (
+	FieldTrack    = false
+	FieldTrackInt = 0
+)

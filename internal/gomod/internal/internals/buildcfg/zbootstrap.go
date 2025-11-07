@@ -2,21 +2,25 @@
 
 package buildcfg
 
-import "runtime"
+import (
+	"runtime"
+)
 
-const DefaultGO386 = `sse2`
-const DefaultGOAMD64 = `v1`
-const DefaultGOARM = `7`
-const DefaultGOARM64 = `v8.0`
-const DefaultGOMIPS = `hardfloat`
-const DefaultGOMIPS64 = `hardfloat`
-const DefaultGOPPC64 = `power8`
-const DefaultGORISCV64 = `rva20u64`
-const defaultGOEXPERIMENT = ``
-const defaultGO_EXTLINK_ENABLED = ``
-const defaultGO_LDSO = ``
-const version = `go1.25.0`
-const defaultGOOS = runtime.GOOS
-const defaultGOARCH = runtime.GOARCH
-const DefaultGOFIPS140 = `off`
-const DefaultCGO_ENABLED = ""
+const (
+	DefaultGO386              = `sse2`
+	DefaultGOAMD64            = `v1`
+	DefaultGOARM              = `7`
+	DefaultGOARM64            = `v8.0`
+	DefaultGOMIPS             = `hardfloat`
+	DefaultGOMIPS64           = `hardfloat`
+	DefaultGOPPC64            = `power8`
+	DefaultGORISCV64          = `rva20u64`
+	defaultGOEXPERIMENT       = ``
+	defaultGO_EXTLINK_ENABLED = ``
+	defaultGO_LDSO            = ``
+	version                   = `go1.25.0`
+	defaultGOOS               = runtime.GOOS
+	defaultGOARCH             = runtime.GOARCH
+	DefaultGOFIPS140          = `off`
+	DefaultCGO_ENABLED        = ""
+)

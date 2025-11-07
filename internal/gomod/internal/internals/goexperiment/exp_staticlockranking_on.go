@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const StaticLockRanking = true
-const StaticLockRankingInt = 1
+const (
+	StaticLockRanking    = true
+	StaticLockRankingInt = 1
+)

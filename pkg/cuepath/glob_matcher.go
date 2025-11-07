@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"cuelang.org/go/cue"
-
 	"github.com/gobwas/glob"
 )
 

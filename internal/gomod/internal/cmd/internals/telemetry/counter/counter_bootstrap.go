@@ -6,7 +6,9 @@
 
 package counter
 
-import "flag"
+import (
+	"flag"
+)
 
 type dummyCounter struct{}
 

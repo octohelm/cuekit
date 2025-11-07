@@ -3,9 +3,10 @@ package cueconvert
 import (
 	"testing"
 
-	"github.com/octohelm/cuekit/pkg/cuepath"
 	"github.com/octohelm/x/testing/bdd"
 	"github.com/octohelm/x/testing/snapshot"
+
+	"github.com/octohelm/cuekit/pkg/cuepath"
 )
 
 func TestFormat(t *testing.T) {

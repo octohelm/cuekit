@@ -20,6 +20,10 @@ import (
 	"strings"
 	"sync"
 
+	"golang.org/x/mod/module"
+	"golang.org/x/mod/sumdb/dirhash"
+	modzip "golang.org/x/mod/zip"
+
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/fsys"
@@ -29,10 +33,6 @@ import (
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/trace"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/par"
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/robustio"
-
-	"golang.org/x/mod/module"
-	"golang.org/x/mod/sumdb/dirhash"
-	modzip "golang.org/x/mod/zip"
 )
 
 // The downloadCache is used to cache the operation of downloading a module to disk
@@ -441,8 +441,10 @@ func RemoveAll(dir string) error {
 // accessed by any of the exported functions of this package after they return, because
 // they can be modified by the non-thread-safe SetState function.
 
-var GoSumFile string             // path to go.sum; set by package modload
-var WorkspaceGoSumFiles []string // path to module go.sums in workspace; set by package modload
+var (
+	GoSumFile           string   // path to go.sum; set by package modload
+	WorkspaceGoSumFiles []string // path to module go.sums in workspace; set by package modload
+)
 
 type modSum struct {
 	mod module.Version
@@ -945,7 +947,6 @@ Outer:
 		tidyGoSum := tidyGoSum(data, keep)
 		return tidyGoSum, nil
 	})
-
 	if err != nil {
 		return fmt.Errorf("updating go.sum: %w", err)
 	}

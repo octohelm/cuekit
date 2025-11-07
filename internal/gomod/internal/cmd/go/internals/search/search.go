@@ -6,11 +6,6 @@ package search
 
 import (
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/fsys"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/pkgpattern"
 	"go/build"
 	"io/fs"
 	"os"
@@ -19,6 +14,12 @@ import (
 	"strings"
 
 	"golang.org/x/mod/modfile"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/fsys"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/pkgpattern"
 )
 
 // A Match represents the result of matching a single package pattern.

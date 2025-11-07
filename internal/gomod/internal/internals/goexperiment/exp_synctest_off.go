@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const Synctest = false
-const SynctestInt = 0
+const (
+	Synctest    = false
+	SynctestInt = 0
+)

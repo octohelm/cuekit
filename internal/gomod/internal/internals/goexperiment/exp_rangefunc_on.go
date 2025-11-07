@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const RangeFunc = true
-const RangeFuncInt = 1
+const (
+	RangeFunc    = true
+	RangeFuncInt = 1
+)

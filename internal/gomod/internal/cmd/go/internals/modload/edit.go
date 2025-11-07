@@ -8,15 +8,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/gover"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/mvs"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/par"
 	"maps"
 	"os"
 	"slices"
 
 	"golang.org/x/mod/module"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/gover"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/mvs"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/internals/par"
 )
 
 // editRequirements returns an edited version of rs such that:

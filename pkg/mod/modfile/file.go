@@ -17,7 +17,7 @@ var GetCueVersion = sync.OnceValue(func() string {
 	//		}
 	//	}
 	//}
-	return "v0.14.1"
+	return "v0.15.0"
 })
 
 type (

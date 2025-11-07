@@ -4,5 +4,7 @@
 
 package goexperiment
 
-const RegabiWrappers = false
-const RegabiWrappersInt = 0
+const (
+	RegabiWrappers    = false
+	RegabiWrappersInt = 0
+)

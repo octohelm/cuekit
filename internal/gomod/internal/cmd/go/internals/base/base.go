@@ -172,8 +172,10 @@ func Fatal(err error) {
 	Exit()
 }
 
-var exitStatus = 0
-var exitMu sync.Mutex
+var (
+	exitStatus = 0
+	exitMu     sync.Mutex
+)
 
 func SetExitStatus(n int) {
 	exitMu.Lock()

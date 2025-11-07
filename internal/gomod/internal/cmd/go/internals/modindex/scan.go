@@ -8,9 +8,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/fsys"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
 	"go/build"
 	"go/doc"
 	"go/scanner"
@@ -18,6 +15,10 @@ import (
 	"io/fs"
 	"path/filepath"
 	"strings"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/base"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/fsys"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/str"
 )
 
 // moduleWalkErr returns filepath.SkipDir if the directory isn't relevant

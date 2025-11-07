@@ -6,7 +6,7 @@ test-race:
     go test -count=1 -v --race --failfast ./pkg/...
 
 fmt:
-    go tool gofumpt -w -l ./pkg/
+    go tool fmt .
 
 update:
     go get -u ./...

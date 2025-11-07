@@ -6,10 +6,11 @@ package base
 
 import (
 	"fmt"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 	"os"
 	"path/filepath"
 	"runtime"
+
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
 )
 
 // AppendPWD returns the result of appending PWD=dir to the environment base.
