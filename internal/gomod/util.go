@@ -4,10 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
+	"strconv"
 	"sync"
 
+	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/gover"
 	"golang.org/x/mod/module"
 
 	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
@@ -44,6 +47,10 @@ func init() {
 		panic(err)
 	}
 	cfg.GOMODCACHE = filepath.Join(userCacheDir, "cue/modcache")
+
+	// hack to ignore patch version check
+	gover.Startup.GOTOOLCHAIN = "auto"
+	gover.TestVersion = "go1." + strconv.Itoa(math.MaxInt16) + "." + strconv.Itoa(math.MaxInt16)
 }
 
 func RepoRootForImportPath(importPath string) (string, error) {

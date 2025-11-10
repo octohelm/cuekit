@@ -18,7 +18,7 @@ const (
 	defaultGOEXPERIMENT       = ``
 	defaultGO_EXTLINK_ENABLED = ``
 	defaultGO_LDSO            = ``
-	version                   = `go1.25.0`
+	version                   = `go1.25.4`
 	defaultGOOS               = runtime.GOOS
 	defaultGOARCH             = runtime.GOARCH
 	DefaultGOFIPS140          = `off`
