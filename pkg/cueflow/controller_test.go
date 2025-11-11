@@ -80,7 +80,7 @@ func FuzzController(f *testing.F) {
 				err := ctrl.Run(ctx)
 				b.Then("success", bdd.NoError(err))
 
-				ret := ctrl.Value().LookupPath(cue.ParsePath("action.result"))
+				ret := ctrl.LookupPath(cue.ParsePath("action.result"))
 
 				b.Then("got results",
 					bdd.MatchSnapshot(func(s *snapshot.Snapshot) {

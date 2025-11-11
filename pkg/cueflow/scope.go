@@ -25,7 +25,7 @@ type scope struct {
 var _ Scope = &scope{}
 
 func (c *scope) Value() cue.Value {
-	return c.root
+	return c.LookupPath(cue.MakePath())
 }
 
 func (c *scope) DecodePath(path cue.Path, target any) error {
