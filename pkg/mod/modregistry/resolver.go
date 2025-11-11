@@ -160,10 +160,6 @@ func (r *resolver) syncAsLink(ctx context.Context, dst, src string, link *modfil
 
 	outDir := filepath.Join(r.root.SourceRoot(), dst)
 
-	if err := os.RemoveAll(outDir); err != nil {
-		return fmt.Errorf("clean %s failed: %w", outDir, err)
-	}
-
 	return fs.WalkDir(module.OSDirFS(src), link.Path, func(path string, d fs.DirEntry, err error) error {
 		if d.IsDir() {
 			return nil
