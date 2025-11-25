@@ -9,7 +9,6 @@ import (
 	"cuelang.org/go/cue/ast"
 	"cuelang.org/go/cue/cuecontext"
 	"cuelang.org/go/cue/format"
-	"cuelang.org/go/mod/module"
 )
 
 type FileOverwrites struct {
@@ -49,7 +48,7 @@ func (f *FileOverwrites) GetDep(mpath string) (*DepOverwrite, bool) {
 	}
 
 	for m, dep := range f.Deps {
-		base, _, ok := module.SplitPathVersion(m)
+		base, _, ok := ast.SplitPackageVersion(m)
 		if ok && base == mpath {
 			return dep, true
 		}

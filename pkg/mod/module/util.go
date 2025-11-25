@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"cuelang.org/go/cue/ast"
 	"cuelang.org/go/mod/module"
 )
 
@@ -14,7 +15,7 @@ func OSDirFS(dir string) fs.FS {
 }
 
 func BasePath(mpath string) string {
-	base, _, ok := module.SplitPathVersion(mpath)
+	base, _, ok := ast.SplitPackageVersion(mpath)
 	if ok {
 		return base
 	}
@@ -22,7 +23,7 @@ func BasePath(mpath string) string {
 }
 
 func SplitPathVersion(path string) (prefix, version string, ok bool) {
-	return module.SplitPathVersion(path)
+	return ast.SplitPackageVersion(path)
 }
 
 func SourceLocOfOSDir(dir string) SourceLoc {

@@ -33,7 +33,7 @@ type registry struct {
 
 func (r *registry) Register(t any) {
 	tpe := reflect.TypeOf(t)
-	for tpe.Kind() == reflect.Ptr {
+	for tpe.Kind() == reflect.Pointer {
 		tpe = tpe.Elem()
 	}
 	r.register(tpe)

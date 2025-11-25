@@ -45,7 +45,7 @@ func WithRegister(register func(t reflect.Type)) OptionFunc {
 type OptionFunc func(s *scanner)
 
 func FromType(tpe reflect.Type, optFns ...OptionFunc) *Decl {
-	for tpe.Kind() == reflect.Ptr {
+	for tpe.Kind() == reflect.Pointer {
 		tpe = tpe.Elem()
 	}
 
@@ -100,8 +100,8 @@ type opt struct {
 }
 
 func (s *scanner) normalizeName(name string) string {
-	if strings.HasSuffix(name, "Interface") {
-		return strings.TrimSuffix(name, "Interface")
+	if before, ok := strings.CutSuffix(name, "Interface"); ok {
+		return before
 	}
 	return name
 }
@@ -125,9 +125,9 @@ func (s *scanner) CueDecl(tpe reflect.Type, o opt) []byte {
 		}
 
 		if o.embed != "" {
-			return []byte(fmt.Sprintf(`%s & { 
+			return fmt.Appendf(nil, `%s & { 
   %s 
-}`, s.Named(tpe.Name(), tpe.PkgPath()), o.embed))
+}`, s.Named(tpe.Name(), tpe.PkgPath()), o.embed)
 		}
 		return []byte(s.Named(tpe.Name(), tpe.PkgPath()))
 	}
@@ -148,7 +148,7 @@ func (s *scanner) CueDecl(tpe reflect.Type, o opt) []byte {
 
 		for i := range types {
 			t := reflect.TypeOf(types[i])
-			if t.Kind() == reflect.Ptr {
+			if t.Kind() == reflect.Pointer {
 				t = t.Elem()
 			}
 			if i > 0 {
@@ -161,15 +161,15 @@ func (s *scanner) CueDecl(tpe reflect.Type, o opt) []byte {
 	}
 
 	switch tpe.Kind() {
-	case reflect.Ptr:
-		return []byte(fmt.Sprintf("%s | null", s.CueDecl(tpe.Elem(), opt{embed: o.embed})))
+	case reflect.Pointer:
+		return fmt.Appendf(nil, "%s | null", s.CueDecl(tpe.Elem(), opt{embed: o.embed}))
 	case reflect.Map:
-		return []byte(fmt.Sprintf("[X=%s]: %s", s.CueDecl(tpe.Key(), opt{embed: o.embed}), s.CueDecl(tpe.Elem(), opt{embed: o.embed})))
+		return fmt.Appendf(nil, "[X=%s]: %s", s.CueDecl(tpe.Key(), opt{embed: o.embed}), s.CueDecl(tpe.Elem(), opt{embed: o.embed}))
 	case reflect.Slice:
 		if tpe.Elem().Kind() == reflect.Uint8 {
 			return []byte("bytes")
 		}
-		return []byte(fmt.Sprintf("[...%s]", s.CueDecl(tpe.Elem(), opt{embed: o.embed})))
+		return fmt.Appendf(nil, "[...%s]", s.CueDecl(tpe.Elem(), opt{embed: o.embed}))
 	case reflect.Struct:
 		final := bytes.NewBuffer(nil)
 
@@ -216,7 +216,7 @@ func (s *scanner) CueDecl(tpe reflect.Type, o opt) []byte {
 			}
 
 			if field.Optional {
-				if t.Kind() == reflect.Ptr {
+				if t.Kind() == reflect.Pointer {
 					t = t.Elem()
 				}
 				fieldSuffix = "?"

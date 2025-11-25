@@ -3,54 +3,59 @@ package cueconvert
 import (
 	"testing"
 
-	"github.com/octohelm/x/testing/bdd"
-	"github.com/octohelm/x/testing/snapshot"
+	. "github.com/octohelm/x/testing/v2"
 
 	"github.com/octohelm/cuekit/pkg/cuepath"
 )
 
 func TestFormat(t *testing.T) {
-	b := bdd.FromT(t)
+	t.Run("Dump", func(t *testing.T) {
+		Then(t, "match snapshot",
+			ExpectMustValue(func() (Snapshot, error) {
+				m, err := cuepath.CompileGlobMatcher("x")
+				if err != nil {
+					return nil, err
+				}
 
-	simple := bdd.Must(Dump(
-		map[string]any{
-			"x": 1,
-		},
-		WithStrictValueMatcher(
-			bdd.Must(cuepath.CompileGlobMatcher("x")),
-		),
-	))
+				simple, err := Dump(
+					map[string]any{"x": 1},
+					WithStrictValueMatcher(m),
+				)
+				if err != nil {
+					return nil, err
+				}
 
-	withStatic := bdd.Must(Dump(
-		map[string]any{
-			"kind": nil,
-			"x":    1,
-		},
-		WithStaticValue(map[string]any{
-			"kind": "X",
-		}),
-	))
+				withStatic, err := Dump(
+					map[string]any{"kind": nil, "x": 1},
+					WithStaticValue(map[string]any{"kind": "X"}),
+				)
+				if err != nil {
+					return nil, err
+				}
 
-	withTyped := bdd.Must(Dump(
-		map[string]any{
-			"x": 1,
-		},
-		WithType("X"),
-	))
+				withTyped, err := Dump(
+					map[string]any{"x": 1},
+					WithType("X"),
+				)
+				if err != nil {
+					return nil, err
+				}
 
-	asDecl := bdd.Must(Dump(
-		map[string]any{
-			"x": 1,
-		},
-		AsDecl("X"),
-	))
+				asDecl, err := Dump(
+					map[string]any{"x": 1},
+					AsDecl("X"),
+				)
+				if err != nil {
+					return nil, err
+				}
 
-	b.Then("match snapshot",
-		bdd.MatchSnapshot(func(s *snapshot.Snapshot) {
-			s.Add("simple.cue", simple)
-			s.Add("with_static.cue", withStatic)
-			s.Add("with_typed.cue", withTyped)
-			s.Add("as_decl.cue", asDecl)
-		}, "dump"),
-	)
+				return SnapshotOf(
+					SnapshotFileFromRaw("simple.cue", simple),
+					SnapshotFileFromRaw("with_static.cue", withStatic),
+					SnapshotFileFromRaw("with_typed.cue", withTyped),
+					SnapshotFileFromRaw("as_decl.cue", asDecl),
+				), nil
+			}, MatchSnapshot("dump")),
+		)
+	})
 }

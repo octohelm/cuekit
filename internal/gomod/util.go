@@ -5,19 +5,17 @@ import (
 	"errors"
 	"fmt"
 	"math"
-	"os"
-	"path/filepath"
 	"strconv"
 	"sync"
 
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/gover"
 	"golang.org/x/mod/module"
 
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/cfg"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modfetch"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/modload"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/vcs"
-	"github.com/octohelm/cuekit/internal/gomod/internal/cmd/go/internals/web"
+	"github.com/octohelm/cuekit/internal/gomod/internal/cfg"
+	"github.com/octohelm/cuekit/internal/gomod/internal/go/cmd/go/internals/gover"
+	"github.com/octohelm/cuekit/internal/gomod/internal/go/cmd/go/internals/modfetch"
+	"github.com/octohelm/cuekit/internal/gomod/internal/go/cmd/go/internals/modload"
+	"github.com/octohelm/cuekit/internal/gomod/internal/go/cmd/go/internals/vcs"
+	"github.com/octohelm/cuekit/internal/gomod/internal/go/cmd/go/internals/web"
 )
 
 type Module struct {
@@ -28,46 +26,41 @@ type Module struct {
 	Sum     string
 }
 
-func envOr(key, def string) string {
-	val := cfg.Getenv(key)
-	if val == "" {
-		val = def
-	}
-	return val
-}
-
 func init() {
-	cfg.GOPROXY = envOr("GOPROXY", "https://proxy.golang.org,direct")
-	cfg.GOSUMDB = envOr("GOSUMDB", "sum.golang.org")
-
-	cfg.CmdName = "get"
-
-	userCacheDir, err := os.UserCacheDir()
-	if err != nil {
-		panic(err)
-	}
-	cfg.GOMODCACHE = filepath.Join(userCacheDir, "cue/modcache")
-
 	// hack to ignore patch version check
 	gover.Startup.GOTOOLCHAIN = "auto"
 	gover.TestVersion = "go1." + strconv.Itoa(math.MaxInt16) + "." + strconv.Itoa(math.MaxInt16)
 }
 
-func RepoRootForImportPath(importPath string) (string, error) {
+type RepoRoot = vcs.RepoRoot
+
+func RepoRootForImportPath(importPath string) (*RepoRoot, error) {
 	r, err := vcs.RepoRootForImportPath(importPath, vcs.IgnoreMod, web.DefaultSecurity)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return r.Root, nil
+	if r == nil {
+		return nil, errors.New("no repo root for import path " + importPath)
+	}
+	return r, nil
 }
 
 var goSettingOnce = &sync.Once{}
 
+type State = modload.State
+
+func NewState() *State {
+	state := modload.NewState()
+	modload.Init(state)
+	state.ForceUseModules = true
+
+	return state
+}
+
 // Get Module
-func Get(ctx context.Context, path string, version string, verbose bool) *Module {
+func Get(ctx context.Context, state *State, path string, version string, verbose bool) *Module {
 	goSettingOnce.Do(func() {
 		cfg.BuildX = verbose
-		modload.ForceUseModules = true
 	})
 
 	mv := module.Version{Path: path, Version: version}
@@ -88,7 +81,7 @@ func Get(ctx context.Context, path string, version string, verbose bool) *Module
 
 	requestPath := path + "@" + version
 
-	found, err := modload.ListModulesOnly(ctx, []string{requestPath}, modload.ListVersions)
+	found, err := modload.ListModulesOnly(state, ctx, []string{requestPath}, modload.ListVersions)
 	if err != nil {
 		panic(fmt.Errorf("list %s failed: %w", requestPath, err))
 	}
@@ -112,7 +105,7 @@ func Get(ctx context.Context, path string, version string, verbose bool) *Module
 }
 
 // Download Module
-func Download(ctx context.Context, m *Module) {
+func Download(ctx context.Context, state *State, m *Module) {
 	mv := module.Version{Path: m.Path, Version: m.Version}
 	dir, err := modfetch.DownloadDir(ctx, mv)
 	if err == nil {
@@ -122,7 +115,7 @@ func Download(ctx context.Context, m *Module) {
 		return
 	}
 
-	dir, err = modfetch.Download(ctx, mv)
+	dir, err = state.Fetcher().Download(ctx, mv)
 	if err != nil {
 		m.Error = err.Error()
 		return
@@ -131,8 +124,8 @@ func Download(ctx context.Context, m *Module) {
 	m.Sum = modfetch.Sum(ctx, module.Version{Path: m.Path, Version: m.Version})
 }
 
-func ListVersion(ctx context.Context, path string) ([]string, error) {
-	found, err := modload.ListModulesOnly(ctx, []string{path}, modload.ListVersions)
+func ListVersion(ctx context.Context, state *State, path string) ([]string, error) {
+	found, err := modload.ListModulesOnly(state, ctx, []string{path}, modload.ListVersions)
 	if err != nil {
 		return nil, err
 	}
@@ -142,7 +135,7 @@ func ListVersion(ctx context.Context, path string) ([]string, error) {
 			return info.Versions, nil
 		}
 
-		m := Get(ctx, info.Path, "latest", false)
+		m := Get(ctx, state, info.Path, "latest", false)
 		if m.Error != "" {
 			return nil, errors.New(m.Error)
 		}

@@ -15,7 +15,7 @@ func (fields OutputFields) OutputValues(rv reflect.Value) map[string]any {
 		return valuer.OutputValues()
 	}
 
-	for rv.Kind() == reflect.Ptr {
+	for rv.Kind() == reflect.Pointer {
 		rv = rv.Elem()
 	}
 
@@ -38,7 +38,7 @@ func (fields OutputFields) OutputValues(rv reflect.Value) map[string]any {
 		}
 
 		// nil value never as output value
-		if f.Kind() == reflect.Ptr {
+		if f.Kind() == reflect.Pointer {
 			if !f.IsNil() {
 				values[name] = f.Interface()
 			}

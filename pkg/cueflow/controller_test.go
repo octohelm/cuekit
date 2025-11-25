@@ -13,8 +13,7 @@ import (
 
 	"github.com/octohelm/x/logr"
 	"github.com/octohelm/x/logr/slog"
-	"github.com/octohelm/x/testing/bdd"
-	"github.com/octohelm/x/testing/snapshot"
+	. "github.com/octohelm/x/testing/v2"
 
 	"github.com/octohelm/cuekit/pkg/cueflow"
 	"github.com/octohelm/cuekit/pkg/cueflow/graph"
@@ -23,16 +22,19 @@ import (
 	"github.com/octohelm/cuekit/pkg/cueutil"
 )
 
-var decls []byte
+var presets []byte
 
 func init() {
 	b := bytes.NewBuffer(nil)
-
 	for t := range example.Registry.Tasks() {
 		_ = t.WriteDeclTo(b)
 	}
 
-	decls = bdd.Must(cueformat.Source(b.Bytes(), cueformat.Simplify()))
+	raw, err := cueformat.Source(b.Bytes(), cueformat.Simplify())
+	if err != nil {
+		panic(err)
+	}
+	presets = raw
 }
 
 func loadWithDecl(path string) ([]byte, error) {
@@ -40,53 +42,67 @@ func loadWithDecl(path string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return slices.Concat(data, decls), nil
+	return slices.Concat(data, presets), nil
 }
 
 func FuzzController(f *testing.F) {
 	f.Add("simple")
 	f.Add("multi_arch_build")
 
-	f.Fuzz(func(t *testing.T, task string) {
-		b := bdd.FromT(t)
+	f.Fuzz(func(t *testing.T, taskName string) {
+		t.Run(fmt.Sprintf("GIVEN tasks from %s", taskName), func(t *testing.T) {
+			// 使用 MustValue 确保前置条件满足
+			root := MustValue(t, func() (cue.Value, error) {
+				data, err := loadWithDecl(fmt.Sprintf("./testdata/%s.cue", taskName))
+				if err != nil {
+					return cue.Value{}, err
+				}
+				return cueutil.BuildFile(data)
+			})
 
-		b.Given("tasks", func(b bdd.T) {
-			root := bdd.Must(cueutil.BuildFile(bdd.Must(loadWithDecl(fmt.Sprintf("./testdata/%s.cue", task)))))
+			t.Run("WHEN init and run controller", func(t *testing.T) {
+				// 1. 环境准备：改用 t.Setenv 确保并发安全
+				t.Setenv("KEY", "key")
 
-			if err := root.Err(); err != nil {
-				t.Fatal("failed", err)
-			}
+				action := runner.AsAction(example.Registry)
+				ctrl := &cueflow.Controller{
+					Action: func(ctx context.Context, task cueflow.Task) error {
+						fmt.Println("RUN", task.Path())
+						return action(ctx, task)
+					},
+					PrintKrokiURI: true,
+				}
 
-			action := runner.AsAction(example.Registry)
+				ctx := logr.WithLogger(context.Background(), slog.Logger(slog.Default()))
 
-			ctrl := &cueflow.Controller{
-				Action: func(ctx context.Context, task cueflow.Task) error {
-					fmt.Println("RUN", task.Path())
+				// 2. 核心行为与快照验证
+				Then(t, "controller should run successfully and results should match snapshot",
+					// 初始化
+					ExpectMust(func() error {
+						return ctrl.Init(root)
+					}),
+					// 执行
+					ExpectMust(func() error {
+						return ctrl.Run(ctx)
+					}),
+					// 快照比对
+					ExpectMustValue(
+						func() (Snapshot, error) {
+							// 图表快照
+							d2File := SnapshotFileFromRaw("g.d2", graph.ToD2Graph(graph.Collect(ctrl.Nodes())))
 
-					return action(ctx, task)
-				},
-				PrintKrokiURI: true,
-			}
+							// 结果快照
+							ret := ctrl.LookupPath(cue.ParsePath("action.result"))
+							jsonRaw, err := ret.MarshalJSON()
+							if err != nil {
+								return nil, err
+							}
+							jsonFile := SnapshotFileFromRaw("result.json", jsonRaw)
 
-			b.Then("init success",
-				bdd.NoError(ctrl.Init(root)),
-			)
-
-			b.When("run tasks", func(b bdd.T) {
-				_ = os.Setenv("KEY", "key")
-
-				ctx := logr.WithLogger(b.Context(), slog.Logger(slog.Default()))
-
-				err := ctrl.Run(ctx)
-				b.Then("success", bdd.NoError(err))
-
-				ret := ctrl.LookupPath(cue.ParsePath("action.result"))
-
-				b.Then("got results",
-					bdd.MatchSnapshot(func(s *snapshot.Snapshot) {
-						s.Add("g.d2", graph.ToD2Graph(graph.Collect(ctrl.Nodes())))
-						s.Add("result.json", bdd.Must(ret.MarshalJSON()))
-					}, task),
+							return SnapshotOf(d2File, jsonFile), nil
+						},
+						MatchSnapshot(taskName),
+					),
 				)
 			})
 		})

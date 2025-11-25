@@ -5,8 +5,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/octohelm/x/testing/bdd"
-	"github.com/octohelm/x/testing/snapshot"
+	"cuelang.org/go/cue"
+
+	. "github.com/octohelm/x/testing/v2"
 
 	"github.com/octohelm/cuekit/pkg/cueutil"
 )
@@ -18,29 +19,41 @@ func FuzzResolver(f *testing.F) {
 	f.Add("result_as_field_default")
 
 	f.Fuzz(func(t *testing.T, c string) {
-		b := bdd.FromT(t)
-
-		root := bdd.Must(cueutil.BuildFile(bdd.Must(os.ReadFile(fmt.Sprintf("./testdata/%s.cue", c)))))
-		fmt.Println(root)
+		root := MustValue(t, func() (cue.Value, error) {
+			data, err := os.ReadFile(fmt.Sprintf("./testdata/%s.cue", c))
+			if err != nil {
+				return cue.Value{}, err
+			}
+			return cueutil.BuildFile(data)
+		})
 
 		r := &Resolver{}
-		b.Then("init success",
-			bdd.NoError(r.Init(root)),
-		)
 
-		for n := range r.Nodes() {
-			fmt.Println("NODE", n.Path())
-			for d := range n.Deps() {
-				fmt.Println(" DEP", d.Path())
-			}
-		}
+		t.Run(fmt.Sprintf("resolve graph from %s", c), func(t *testing.T) {
+			Then(t, "success",
+				ExpectMust(func() error {
+					return r.Init(root)
+				}),
 
-		b.Then("resolve graph",
-			bdd.MatchSnapshot(func(s *snapshot.Snapshot) {
-				g := ToD2Graph(Collect(r.Nodes()))
-				s.Add("g.d2", g)
-				fmt.Println(bdd.Must(ToKrokiURI(g)))
-			}, c),
-		)
+				ExpectMustValue(func() (Snapshot, error) {
+					for n := range r.Nodes() {
+						fmt.Printf("NODE %s\n", n.Path())
+						for d := range n.Deps() {
+							fmt.Printf("  DEP %s\n", d.Path())
+						}
+					}
+
+					g := ToD2Graph(Collect(r.Nodes()))
+
+					if uri, err := ToKrokiURI(g); err == nil {
+						fmt.Printf("Kroki URI: %s\n", uri)
+					}
+
+					return SnapshotOf(
+						SnapshotFileFromRaw("g.d2", g),
+					), nil
+				}, MatchSnapshot(c)),
+			)
+		})
 	})
 }

@@ -6,6 +6,8 @@ test-race:
     go test -count=1 -v --race --failfast ./pkg/...
 
 fmt:
+    go fix ./pkg/...
+    go fix ./internal/gomod
     go tool fmt .
 
 update:
@@ -15,13 +17,8 @@ dep:
     go mod tidy
 
 clean:
-    rm -rf ~/Library/Caches/cue/github.com/octohelm/cuemod-versioned-example*
 
-internal_fork := "go run ./internal/cmd/internalfork"
+internal_fork := "go tool internalfork"
 
 fork-go-internal:
-    {{ internal_fork }} \
-    	-p cmd/go/internal/modload \
-    	-p cmd/go/internal/modfetch \
-    	-p internal/godebug \
-    	./internal/gomod/internal
+    {{ internal_fork }} ./internal/gomod/internal/go

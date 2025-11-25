@@ -22,6 +22,7 @@ import (
 type resolver struct {
 	CacheDir string
 
+	state    *gomod.State
 	resolved singleflight.GroupValue[moduleVersion, module.SourceLoc]
 
 	mu   sync.Mutex
@@ -30,6 +31,7 @@ type resolver struct {
 
 func (r *resolver) Init(root *module.Module) error {
 	r.root = root
+	r.state = gomod.NewState()
 	return nil
 }
 
@@ -54,11 +56,11 @@ func (r *resolver) ModuleVersions(ctx context.Context, mpath string) ([]string, 
 		return nil, nil
 	}
 
-	if repoRoot != trimVersionedSuffix(path) {
+	if repoRoot.Root != trimVersionedSuffix(path) {
 		return nil, nil
 	}
 
-	versions, _ := gomod.ListVersion(ctx, path)
+	versions, _ := gomod.ListVersion(ctx, r.state, path)
 	if len(versions) > 0 {
 		validVersions := make([]string, 0, len(versions))
 
@@ -135,7 +137,7 @@ func (r *resolver) Resolve(ctx context.Context, mpath string, version string) (m
 
 func (r *resolver) gomodDownload(ctx context.Context, mpath string, version string) (*gomod.Module, error) {
 	pkg := module.BasePath(mpath)
-	info := gomod.Get(ctx, pkg, version, true)
+	info := gomod.Get(ctx, r.state, pkg, version, true)
 	if info == nil {
 		return nil, fmt.Errorf("can't found %s@%s", pkg, version)
 	}
@@ -145,7 +147,7 @@ func (r *resolver) gomodDownload(ctx context.Context, mpath string, version stri
 
 	if info.Dir == "" {
 		logr.FromContext(ctx).Debug(fmt.Sprintf("get %s@%s", pkg, version))
-		gomod.Download(ctx, info)
+		gomod.Download(ctx, r.state, info)
 		if info.Error != "" {
 			return nil, errors.New(info.Error)
 		}

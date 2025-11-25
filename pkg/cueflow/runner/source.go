@@ -74,9 +74,7 @@ type source struct {
 }
 
 func (s *source) writeDecl(nt *named) error {
-	for k, v := range nt.decl.Imports {
-		s.imports[k] = v
-	}
+	maps.Copy(s.imports, nt.decl.Imports)
 
 	s.WriteString("\n")
 
