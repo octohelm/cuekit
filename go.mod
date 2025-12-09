@@ -18,10 +18,10 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/go-json-experiment/json v0.0.0-20251027170946-4849db3c2f7e
 	github.com/gobwas/glob v0.2.3
-	golang.org/x/mod v0.30.0
-	golang.org/x/sync v0.18.0
-	golang.org/x/telemetry v0.0.0-20251111182119-bc8e575c7b54
-	golang.org/x/tools v0.39.0
+	golang.org/x/mod v0.31.0
+	golang.org/x/sync v0.19.0
+	golang.org/x/telemetry v0.0.0-20251203150158-8fff8a5912fc
+	golang.org/x/tools v0.40.0
 )
 
 require (
@@ -40,10 +40,10 @@ require (
 	github.com/protocolbuffers/txtpbfmt v0.0.0-20251016062345-16587c79cd91 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/net v0.47.0 // indirect
+	golang.org/x/net v0.48.0 // indirect
 	golang.org/x/oauth2 v0.33.0 // indirect
-	golang.org/x/sys v0.38.0 // indirect
-	golang.org/x/text v0.31.0 // indirect
+	golang.org/x/sys v0.39.0 // indirect
+	golang.org/x/text v0.32.0 // indirect
 	google.golang.org/protobuf v1.36.10 // indirect
 	mvdan.cc/gofumpt v0.9.2 // indirect
 )
